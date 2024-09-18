@@ -4,23 +4,19 @@
  */
 package com.ttn.jobapp.Services;
 
-import com.ttn.jobapp.Pojo.Employee;
+import com.ttn.jobapp.Pojo.Account;
 import java.util.List;
 
-/*
+/**
  *
  * @author Win11
  */
-
-
-public interface EmployeeService {
+public interface AccountService {
+    Account save(Account account);
     
-    Employee save(Employee employee);
+    List<Account> getAccounts();
     
-    List<Employee> getEmployees();
-    
-    Employee update(Long id);
+    Account update(Long id, Account account);
     
     void delete(Long id);
-    
 }

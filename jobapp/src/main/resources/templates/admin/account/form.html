@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="admin/fragments/head::head"></head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+
+            <div th:replace="admin/fragments/header::header"></div>
+
+            <!-- =============================================== -->
+
+            <!-- Left side column. contains the sidebar -->
+            <div th:replace="admin/fragments/sidebar::sidebar"></div>
+
+            <!-- =============================================== -->
+
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        Account Management Page
+                        <small>it all starts here</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li><a href="/admin/account">Account Management</a></li>
+                        <li><a href="">Create Account</a></li>
+                    </ol>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Create Account</h3>
+                        </div>
+                        <div class="box-body">
+                            <!-- Update th:action to point to the correct URL for creating a new account -->
+                            <form th:action="@{/admin/account/save}" th:object="${account}" method="post">
+                                <div class="form-group">
+                                    <label for="email">Email:</label>
+                                    <input type="text" id="email" th:field="*{email}" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
+                                    <form method="post" th:action="@{/upload}" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <input type="file" name="image" accept="image/*" class="form-control-file">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Upload image</button>
+                                    </form>
+                                    <span th:if="${msg != null}" th:text="${msg}"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password">Password:</label>
+                                    <input type="password" id="password" th:field="*{password}" class="form-control" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="role">Role:</label>
+                                    <select name="role" id="role" th:field="*{role}" class="form-control">
+                                        <option value="admin">Admin</option>
+                                        <option value="employee">Employee</option>
+                                        <option value="employer">Employer</option>
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-success">Create</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+                <!-- /.content -->
+            </div>
+            <!-- /.content-wrapper -->
+
+            <div th:replace="admin/fragments/footer::footer"></div>
+
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 3 -->
+        <div th:replace="admin/fragments/script::script"></div>
+
+    </body>
+</html>
