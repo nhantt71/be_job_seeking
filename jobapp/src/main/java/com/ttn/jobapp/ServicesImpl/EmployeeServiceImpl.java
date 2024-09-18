@@ -33,7 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public Employee update(Employee employee, Long id) {
+    public Employee update(Long id) {
         Employee e = er.findById(id).get();
         
         if(Objects.nonNull(e.getFullname()) && !"".equalsIgnoreCase(e.getFullname())){
@@ -47,7 +47,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public void delete(Employee employee, Long id) {
+    public void delete(Long id) {
         Employee e = er.findById(id).get();
         er.delete(e);
     }
