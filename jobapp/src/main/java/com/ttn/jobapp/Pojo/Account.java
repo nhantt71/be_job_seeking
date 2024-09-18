@@ -31,4 +31,7 @@ public class Account {
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean available = true;
     
+    @Column(nullable = false)
+    private String role;
+    
 }

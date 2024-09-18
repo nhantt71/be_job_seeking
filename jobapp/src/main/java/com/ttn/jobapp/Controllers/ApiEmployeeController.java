@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api")
-public class EmployeeController {
+public class ApiEmployeeController {
     
     @Autowired
     private EmployeeService es;
