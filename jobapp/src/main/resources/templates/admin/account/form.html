@@ -38,39 +38,37 @@
                             <h3 class="box-title">Create Account</h3>
                         </div>
                         <div class="box-body">
-                            <!-- Update th:action to point to the correct URL for creating a new account -->
-                            <form th:action="@{/admin/account/save}" th:object="${account}" method="post">
+                            <form th:action="@{/admin/account/create}" enctype="multipart/form-data" th:object="${accountDto}" method="post">
                                 <div class="form-group">
-                                    <label for="email">Email:</label>
-                                    <input type="text" id="email" th:field="*{email}" class="form-control" />
+                                    <label>Email:</label>
+                                    <input type="text" th:field="*{email}" class="form-control" />
+                                    <p th:if="${#fields.hasErrors('email')}" th:errorclass="text-danger" th:errors="*{email}"></p>
                                 </div>
-
                                 <div class="form-group">
-                                    <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
-                                    <form method="post" th:action="@{/upload}" enctype="multipart/form-data">
-                                        <div class="form-group">
-                                            <input type="file" name="image" accept="image/*" class="form-control-file">
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Upload image</button>
-                                    </form>
-                                    <span th:if="${msg != null}" th:text="${msg}"></span>
+                                    <label>Password:</label>
+                                    <input type="password" th:field="*{password}" class="form-control" />
+                                    <p th:if="${#fields.hasErrors('password')}" th:errorclass="text-danger" th:errors="*{password}"></p>
                                 </div>
-
                                 <div class="form-group">
-                                    <label for="password">Password:</label>
-                                    <input type="password" id="password" th:field="*{password}" class="form-control" />
+                                    <label>Avatar</label>
+                                    <div>
+                                        <input class="form-control" type="file" th:field="*{imageFile}">
+                                        <p th:if="${#fields.hasErrors('imageFile')}" th:errorclass="text-danger" th:errors="*{imageFile}"></p>
+                                    </div>
                                 </div>
-
                                 <div class="form-group">
-                                    <label for="role">Role:</label>
-                                    <select name="role" id="role" th:field="*{role}" class="form-control">
+                                    <label>Role:</label>
+                                    <select th:field="*{role}" class="form-control">
                                         <option value="admin">Admin</option>
                                         <option value="employee">Employee</option>
                                         <option value="employer">Employer</option>
                                     </select>
+                                    <p th:if="${#fields.hasErrors('role')}" th:errorclass="text-danger" th:errors="*{role}"></p>
                                 </div>
-
-                                <button type="submit" class="btn btn-success">Create</button>
+                                <div class="row">
+                                    <button type="submit" class="btn btn-success">Create</button>
+                                    <a class="btn btn-outline-primary" href="/admin/account" role="button">Cancel</a>
+                                </div>
                             </form>
                         </div>
                     </div>

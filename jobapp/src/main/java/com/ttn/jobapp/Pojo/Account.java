@@ -15,23 +15,32 @@ import jakarta.persistence.*;
 @lombok.Getter
 @lombok.Setter
 public class Account {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(unique = true, nullable = false)
     private String email;
-    
+
     @Column(nullable = false)
     private String password;
-    
+
     private String avatar;
-    
+
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private Boolean available = true;
-    
+    private Boolean available = false;
+
     @Column(nullable = false)
     private String role;
     
+
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @JoinColumn
+    private Employee employee;
+
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @JoinColumn
+    private Employer employer;
+
 }

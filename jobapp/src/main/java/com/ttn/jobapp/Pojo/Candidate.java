@@ -23,8 +23,16 @@ public class Candidate {
     
     private LocalDate birth;
     
-    @Column(columnDefinition = "VARCHAR(10) CHECK (gender IN ('Male', 'Female', 'Other'))")
+    @Column(name = "gender", nullable = false, length = 10)
     private String gender;
+
+    @PrePersist
+    @PreUpdate
+    public void validateGender() {
+        if (!gender.equals("Male") && !gender.equals("Female") && !gender.equals("Other")) {
+            throw new IllegalArgumentException("Invalid gender value. Must be 'Male', 'Female', or 'Other'.");
+        }
+    }
     
     private String nationality;
     private String experience;
@@ -41,7 +49,7 @@ public class Candidate {
     @Column(name = "languages_skill", columnDefinition = "TEXT")
     private String languagesSkill;
     
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "account_id", unique = true)
     private Account account;
 

@@ -4,11 +4,17 @@
  */
 package com.ttn.jobapp.ServicesImpl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.ttn.jobapp.Pojo.Account;
 import com.ttn.jobapp.Repositories.AccountRepository;
 import com.ttn.jobapp.Services.AccountService;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +27,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRepository ar;
+    
 
     @Override
     public Account save(Account account) {
@@ -54,7 +61,6 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void delete(Long id) {
         Account a = ar.findById(id).get();
-
         ar.delete(a);
     }
 
