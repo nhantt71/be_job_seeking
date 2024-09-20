@@ -26,11 +26,19 @@ public class Employer {
     private String city;
     private String province;
     
-    @Column(columnDefinition = "VARCHAR(10) CHECK (gender IN ('Male', 'Female', 'Other'))")
+    @Column(name = "gender", nullable = false, length = 10)
     private String gender;
 
+    @PrePersist
+    @PreUpdate
+    public void validateGender() {
+        if (!gender.equals("Male") && !gender.equals("Female") && !gender.equals("Other")) {
+            throw new IllegalArgumentException("Invalid gender value. Must be 'Male', 'Female', or 'Other'.");
+        }
+    }
+
     @OneToOne
-    @JoinColumn(name = "employee_id", unique = true)
-    private Employee employee;
+    @JoinColumn(name = "account_id", unique = true)
+    private Account account;
 
 }
