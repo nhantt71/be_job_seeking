@@ -10,6 +10,7 @@ import com.ttn.jobapp.Dto.AccountDto;
 import com.ttn.jobapp.Pojo.Account;
 import com.ttn.jobapp.Repositories.AccountRepository;
 import com.ttn.jobapp.Services.AccountService;
+import com.ttn.jobapp.Utils.CloudinaryUtils;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class AccountController {
 
     @Autowired
     private AccountRepository ar;
-    
+
     @Autowired
     private Cloudinary cloudinary;
 
@@ -89,6 +90,14 @@ public class AccountController {
     public String showEditPage(Model model, @RequestParam Long id) {
         try {
             Account account = ar.findById(id).get();
+            model.addAttribute("account", account);
+
+            AccountDto accountDto = new AccountDto();
+            accountDto.setEmail(account.getEmail());
+            accountDto.setPassword(account.getPassword());
+            accountDto.setRole(account.getRole());
+
+            model.addAttribute("accountDto", accountDto);
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -96,6 +105,43 @@ public class AccountController {
         }
 
         return "admin/account/edit";
+    }
+
+    @PostMapping("/edit")
+    public String updateAccount(Model model, @Valid @ModelAttribute AccountDto accountDto,
+            BindingResult result, @RequestParam Long id) throws IOException {
+
+        try {
+            Account account = ar.findById(id).get();
+            model.addAttribute("account", account);
+
+            if (result.hasErrors()) {
+                return "admin/account/edit?id=" + id;
+            }
+
+            if (!accountDto.getImageFile().isEmpty()) {
+                CloudinaryUtils.deleteImageByUrl(account.getAvatar());
+
+                Map res = this.cloudinary.uploader().upload(accountDto.getImageFile().getBytes(),
+                        ObjectUtils.asMap("resource_type", "auto"));
+                account.setAvatar(res.get("secure_url").toString());
+            }
+
+            if (!accountDto.getPassword().isEmpty()) {
+                account.setPassword(accountDto.getPassword());
+            }
+
+            account.setEmail(accountDto.getEmail());
+            account.setRole(accountDto.getRole());
+
+            this.as.save(account);
+
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return "redirect:/admin/account";
+
     }
 
 }
