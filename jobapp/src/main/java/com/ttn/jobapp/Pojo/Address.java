@@ -4,33 +4,28 @@
  */
 package com.ttn.jobapp.Pojo;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  *
  * @author Win11
  */
-import jakarta.persistence.*;
-import java.time.LocalDate;
-
 @Entity
-@lombok.Getter
-@lombok.Setter
-@Table(name = "cv")
-public class CV {
-
+@Getter
+@Setter
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "file_cv")
-    private String fileCV;
-
-    private String name;
-
-    @Column(name = "updatedate")
-    private LocalDate updateDate;
-
+    @Column(nullable = false)
+    private String detail;
+    private String city;
+    private String province;
+    
     @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
-
+    @JoinColumn(name = "company_id")
+    private Company company;
 }

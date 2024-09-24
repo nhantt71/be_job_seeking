@@ -41,6 +41,9 @@ public class AccountController {
 
     @Autowired
     private Cloudinary cloudinary;
+    
+    @Autowired
+    private CloudinaryUtils cloudinaryUtils;
 
     @GetMapping
     public String account(Model model) {
@@ -114,25 +117,29 @@ public class AccountController {
         try {
             Account account = ar.findById(id).get();
             model.addAttribute("account", account);
+            
+            String imageUrl = account.getAvatar();
 
             if (result.hasErrors()) {
-                return "admin/account/edit?id=" + id;
+                return "admin/account/edit";
             }
 
             if (!accountDto.getImageFile().isEmpty()) {
-                CloudinaryUtils.deleteImageByUrl(account.getAvatar());
-
                 Map res = this.cloudinary.uploader().upload(accountDto.getImageFile().getBytes(),
                         ObjectUtils.asMap("resource_type", "auto"));
                 account.setAvatar(res.get("secure_url").toString());
+                
+                String publicId = cloudinaryUtils.extractPublicIdFromUrl(imageUrl);
+                this.cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
             }
-
-            if (!accountDto.getPassword().isEmpty()) {
+            
+            if (!account.getPassword().equals(accountDto.getPassword())){
                 account.setPassword(accountDto.getPassword());
             }
 
             account.setEmail(accountDto.getEmail());
             account.setRole(accountDto.getRole());
+
 
             this.as.save(account);
 
@@ -141,7 +148,5 @@ public class AccountController {
         }
 
         return "redirect:/admin/account";
-
     }
-
 }

@@ -4,21 +4,18 @@
  */
 package com.ttn.jobapp.Services;
 
-import com.ttn.jobapp.Pojo.Employee;
+import com.ttn.jobapp.Pojo.Category;
 import java.util.List;
 
-/*
+/**
  *
  * @author Win11
  */
+public interface CategoryService {
+    
+    Category save(Category category);
 
+    List<Category> getCategories();
 
-public interface EmployeeService {
-    
-    Employee save(Employee employee);
-    
-    List<Employee> getEmployees();
-    
     void delete(Long id);
-    
 }

@@ -1,14 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.ttn.jobapp.Pojo;
 
-/**
- *
- * @author Win11
- */
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @lombok.Getter
@@ -29,5 +23,10 @@ public class Employee {
     @OneToOne
     @JoinColumn(name = "account_id", unique = true)
     private Account account;
+    
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<CV> cvs;
+    
 
 }
