@@ -4,21 +4,20 @@
  */
 package com.ttn.jobapp.Services;
 
-import com.ttn.jobapp.Pojo.Employee;
+import com.ttn.jobapp.Pojo.CV;
 import java.util.List;
 
-/*
+/**
  *
  * @author Win11
  */
 
+public interface CVService {
+    
+    CV save(CV cv);
 
-public interface EmployeeService {
-    
-    Employee save(Employee employee);
-    
-    List<Employee> getEmployees();
-    
+    List<CV> getCVs();
+
     void delete(Long id);
     
 }

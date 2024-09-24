@@ -34,7 +34,6 @@ public class Account {
     @Column(nullable = false)
     private String role;
     
-
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     @JoinColumn
     private Employee employee;

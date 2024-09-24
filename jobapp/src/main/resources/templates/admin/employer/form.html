@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="admin/fragments/head::head"></head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+
+            <div th:replace="admin/fragments/header::header"></div>
+
+            <!-- =============================================== -->
+
+            <!-- Left side column. contains the sidebar -->
+            <div th:replace="admin/fragments/sidebar::sidebar"></div>
+
+            <!-- =============================================== -->
+
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        Account Management Page
+                        <small>it all starts here</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li><a href="/admin/employer">Employer Management</a></li>
+                        <li><a href="">Create Employer</a></li>
+                    </ol>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Create Employer</h3>
+                        </div>
+                        <div class="box-body">
+                            <form th:action="@{/admin/employer/create}" enctype="multipart/form-data" th:object="${employerDto}" method="post">
+                                <div class="form-group">
+                                    <label>Province:</label>
+                                    <input type="text" th:field="*{province}" class="form-control" />
+                                    <p th:if="${#fields.hasErrors('province')}" th:errorclass="text-danger" th:errors="*{province}"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label>City:</label>
+                                    <input type="text" th:field="*{city}" class="form-control" />
+                                    <p th:if="${#fields.hasErrors('city')}" th:errorclass="text-danger" th:errors="*{city}"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Gender:</label>
+                                    <select th:field="*{gender}" class="form-control">
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <p th:if="${#fields.hasErrors('gender')}" th:errorclass="text-danger" th:errors="*{gender}"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Company:</label>
+                                    <select th:field="*{companyId}" class="form-control">
+                                        <option value="" disabled selected>Select a company</option>
+                                        <option th:each="company : ${companies}"
+                                                th:value="${company.id}"
+                                                th:text="${company.name}">
+                                        </option>
+                                    </select>
+                                    <p th:if="${#fields.hasErrors('companyId')}" th:errorclass="text-danger" th:errors="*{companyId}"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Account:</label>
+                                    <select th:field="*{accountId}" class="form-control">
+                                        <option value="" disabled selected>Select a company</option>
+                                        <option th:each="account : ${accounts}"
+                                                th:value="${account.id}"
+                                                th:text="${account.email}">
+                                        </option>
+                                    </select>
+                                    <p th:if="${#fields.hasErrors('accountId')}" th:errorclass="text-danger" th:errors="*{accountId}"></p>
+                                </div>
+                                <div class="row">
+                                    <button type="submit" class="btn btn-success">Create</button>
+                                    <a class="btn btn-outline-primary" href="/admin/employer" role="button">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+                <!-- /.content -->
+            </div>
+            <!-- /.content-wrapper -->
+
+            <div th:replace="admin/fragments/footer::footer"></div>
+
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 3 -->
+        <div th:replace="admin/fragments/script::script"></div>
+
+    </body>
+</html>

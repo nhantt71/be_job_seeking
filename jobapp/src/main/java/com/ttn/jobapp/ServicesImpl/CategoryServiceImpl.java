@@ -4,9 +4,9 @@
  */
 package com.ttn.jobapp.ServicesImpl;
 
-import com.ttn.jobapp.Pojo.Employee;
-import com.ttn.jobapp.Repositories.EmployeeRepository;
-import com.ttn.jobapp.Services.EmployeeService;
+import com.ttn.jobapp.Pojo.Category;
+import com.ttn.jobapp.Repositories.CategoryRepository;
+import com.ttn.jobapp.Services.CategoryService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,24 +16,24 @@ import org.springframework.stereotype.Service;
  * @author Win11
  */
 @Service
-public class EmployeeServiceImpl implements EmployeeService{
+public class CategoryServiceImpl implements CategoryService{
     
     @Autowired
-    private EmployeeRepository er;
+    private CategoryRepository cr;
 
     @Override
-    public Employee save(Employee employee) {
-        return er.save(employee);
+    public Category save(Category category) {
+        return cr.save(category);
     }
 
     @Override
-    public List<Employee> getEmployees() {
-        return er.findAll();
+    public List<Category> getCategories() {
+        return cr.findAll();
     }
 
     @Override
     public void delete(Long id) {
-        er.deleteById(id);
+        cr.deleteById(id);
     }
-
+    
 }
