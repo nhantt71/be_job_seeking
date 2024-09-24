@@ -19,13 +19,17 @@ public class Employer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(nullable = false)
-    private String companyName;
-    
+
+    @Column(nullable = true)
     private String city;
     private String province;
-    
+
+    @Column(nullable = false)
+    private String fullname;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @Column(name = "gender", nullable = false, length = 10)
     private String gender;
 
@@ -40,5 +44,9 @@ public class Employer {
     @OneToOne
     @JoinColumn(name = "account_id", unique = true)
     private Account account;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
 }

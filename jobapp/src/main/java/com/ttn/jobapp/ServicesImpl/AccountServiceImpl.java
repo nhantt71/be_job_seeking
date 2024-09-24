@@ -4,17 +4,17 @@
  */
 package com.ttn.jobapp.ServicesImpl;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.ttn.jobapp.Pojo.Account;
+import com.ttn.jobapp.Pojo.Employee;
+import com.ttn.jobapp.Pojo.Employer;
 import com.ttn.jobapp.Repositories.AccountRepository;
+import com.ttn.jobapp.Repositories.EmployeeRepository;
+import com.ttn.jobapp.Repositories.EmployerRepository;
 import com.ttn.jobapp.Services.AccountService;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRepository ar;
-    
+
+    @Autowired
+    private EmployeeRepository employeeRepo;
+
+    @Autowired
+    private EmployerRepository employerRepo;
 
     @Override
     public Account save(Account account) {
@@ -40,28 +45,34 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account update(Long id, Account account) {
-        Account a = ar.findById(id).get();
-
-        if (Objects.nonNull(a.getEmail()) && !account.getEmail().equalsIgnoreCase(a.getEmail())) {
-            a.setEmail(account.getEmail());
-        }
-        if (Objects.nonNull(a.getAvatar()) && !account.getAvatar().equalsIgnoreCase(a.getAvatar())) {
-            a.setAvatar(account.getAvatar());
-        }
-        if (Objects.nonNull(a.getPassword()) && !account.getPassword().equalsIgnoreCase(a.getPassword())) {
-            a.setPassword(account.getPassword());
-        }
-        if (a.getAvailable() != null && !account.getAvailable().equals(a.getAvailable())) {
-            a.setAvailable(!account.getAvailable());
-        }
-        return ar.save(a);
+    public void delete(Long id) {
+        ar.deleteById(id);
     }
 
     @Override
-    public void delete(Long id) {
-        Account a = ar.findById(id).get();
-        ar.delete(a);
-    }
+    public List<Account> getUnattachAccounts() {
+        List<Employer> allEmployers = employerRepo.findAll();
+        List<Employee> allEmployees = employeeRepo.findAll();
+        List<Account> allAccounts = ar.findAll();
 
+        List<Long> accountIds = new ArrayList<>();
+
+        allEmployees.forEach(x -> {
+            if (x.getAccount() != null) {
+                accountIds.add(x.getAccount().getId());
+            }
+        });
+
+        allEmployers.forEach(x -> {
+            if (x.getAccount() != null) {
+                accountIds.add(x.getAccount().getId());
+            }
+        });
+
+        List<Account> unattachAccounts = allAccounts.stream()
+                .filter(account -> !accountIds.contains(account.getId()))
+                .collect(Collectors.toList());
+
+        return unattachAccounts;
+    }
 }

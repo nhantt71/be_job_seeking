@@ -4,21 +4,18 @@
  */
 package com.ttn.jobapp.Services;
 
-import com.ttn.jobapp.Pojo.Employee;
+import com.ttn.jobapp.Pojo.Employer;
 import java.util.List;
 
-/*
+/**
  *
  * @author Win11
  */
+public interface EmployerService {
 
+    Employer save(Employer employer);
 
-public interface EmployeeService {
-    
-    Employee save(Employee employee);
-    
-    List<Employee> getEmployees();
-    
+    List<Employer> getEmployers();
+
     void delete(Long id);
-    
 }

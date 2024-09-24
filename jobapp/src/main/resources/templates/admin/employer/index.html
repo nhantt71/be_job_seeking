@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="admin/fragments/head::head"></head> 
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+
+            <div th:replace="admin/fragments/header::header"></div>
+
+            <!-- =============================================== -->
+
+            <!-- Left side column. contains the sidebar -->
+
+            <div th:replace="admin/fragments/sidebar::sidebar"></div>
+
+            <!-- =============================================== -->
+
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        Employer Management Page
+                        <small>it all starts here</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li><a href="">Employer Management</a></li>
+                    </ol>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">List of Employers</h3>
+
+                            <a href="/admin/employer/create" class="btn btn-success">Create Employer</a>
+                        </div>
+                        <div class="box-body">
+
+
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Account</th>
+                                        <th>Full name</th>
+                                        <th>Phone number</th>
+                                        <th>Gender</th>
+                                        <th>Province</th>
+                                        <th>City</th>
+                                        <th>Company</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="employer : ${employers}">
+                                        <td th:text="${employer.id}"></td>
+                                        <td th:text="${employer.account.email}"></td>
+                                        <td th:text="${employer.fullname}"></td>
+                                        <td th:text="${employer.phoneNumber}"></td>
+                                        <td th:text="${employer.gender}"></td>
+                                        <td th:text="${employer.province}"></td>
+                                        <td th:text="${employer.city}"></td>
+                                        <td th:text="${employer.company.name}"></td>
+                                        <td>
+                                            <div style="display: flex; gap: 10px;">
+                                                <a th:href="@{/admin/employer/edit(id=${employer.id})}" class="btn btn-primary">Edit</a>
+                                                <a class="btn btn-danger btn-sm" th:href="@{/admin/employer/delete(id=${employer.id})}" 
+                                                   onclick="return confirm('Are you sure? The information of the account will be deleted with the employer!')">Delete</a>
+
+                                            </div>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <!-- /.content -->
+            </div>
+            <!-- /.content-wrapper -->
+
+            <div th:replace="admin/fragments/footer::footer"></div>
+
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 3 -->
+
+        <div th:replace="admin/fragments/script::script"></div>
+
+    </body>
+</html>

@@ -1,13 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.ttn.jobapp.Pojo;
 
-/**
- *
- * @author Win11
- */
+
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -34,6 +28,10 @@ public class Job {
     private LocalDate endDate;
     
     @ManyToOne
-    @JoinColumn(name = "employer_id")
-    private Employer employer;
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
+    
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 }
