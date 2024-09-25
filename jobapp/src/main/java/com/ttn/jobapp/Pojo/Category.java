@@ -30,6 +30,8 @@ public class Category {
 
     @Column(nullable = false)
     private String name;
+    
+    private String icon;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore
