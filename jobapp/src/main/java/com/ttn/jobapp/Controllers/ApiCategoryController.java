@@ -4,8 +4,10 @@
  */
 package com.ttn.jobapp.Controllers;
 
+import com.ttn.jobapp.Dto.CategoryDto;
 import com.ttn.jobapp.Pojo.Category;
 import com.ttn.jobapp.Services.CategoryService;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,5 +32,25 @@ public class ApiCategoryController {
     @GetMapping
     public ResponseEntity<List<Category>> allCategories(){
         return new ResponseEntity<>(this.cs.getCategories(), HttpStatus.OK);
+    }
+    
+    @GetMapping("/get-job-amount")
+    public ResponseEntity<List<CategoryDto>> getJobAmountWithCate(){
+        List<CategoryDto> cateDtos = new ArrayList<>();
+        
+        List<Category> cates = cs.getCategories();
+        
+        cates.forEach(x -> {
+            int jobs = cs.countJobsByCate(x);
+            CategoryDto cDto = new CategoryDto();
+            cDto.setName(x.getName());
+            cDto.setIcon(x.getIcon());
+            cDto.setJobs(jobs);
+            cateDtos.add(cDto);
+        });
+        
+        if (cateDtos.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } return new ResponseEntity<>(cateDtos, HttpStatus.OK);
     }
 }

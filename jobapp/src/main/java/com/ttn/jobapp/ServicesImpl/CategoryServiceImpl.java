@@ -35,5 +35,10 @@ public class CategoryServiceImpl implements CategoryService{
     public void delete(Long id) {
         cr.deleteById(id);
     }
+
+    @Override
+    public int countJobsByCate(Category category) {
+        return category.getJobs().size();
+    }
     
 }
