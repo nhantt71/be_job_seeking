@@ -18,4 +18,6 @@ public interface CategoryService {
     List<Category> getCategories();
 
     void delete(Long id);
+    
+    int countJobsByCate(Category category);
 }
