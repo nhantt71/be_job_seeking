@@ -8,7 +8,7 @@ import com.ttn.jobapp.Pojo.Account;
 import java.util.List;
 
 
-public interface AccountService {
+public interface AccountService{
 
     Account save(Account account);
 
@@ -17,4 +17,5 @@ public interface AccountService {
     void delete(Long id);
     
     List<Account> getUnattachAccounts();
+
 }

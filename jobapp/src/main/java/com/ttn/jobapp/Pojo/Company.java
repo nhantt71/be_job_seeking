@@ -30,18 +30,18 @@ public class Company {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Address> address;
-
     @Column(name = "phone_number")
     private String phoneNumber;
 
     @Column(name = "website")
     private String website;
     
-    @Column(name = "information")
+    @Column(name = "information", columnDefinition = "TEXT")
     private String information;
+    
+    @OneToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
     
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     @JsonIgnore

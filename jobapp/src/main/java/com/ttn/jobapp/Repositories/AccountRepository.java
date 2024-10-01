@@ -15,4 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public interface AccountRepository extends JpaRepository<Account, Long>{}
+public interface AccountRepository extends JpaRepository<Account, Long>{
+    Account findByEmail(String email);
+    
+    Boolean existsByEmail(String email);
+}

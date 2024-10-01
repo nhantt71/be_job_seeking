@@ -15,4 +15,6 @@ public interface CompanyService {
     List<Company> getCompanies();
 
     void delete(Long id);
+    
+    Integer jobAmount(Company company);
 }

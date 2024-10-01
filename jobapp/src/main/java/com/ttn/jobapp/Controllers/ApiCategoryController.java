@@ -43,6 +43,7 @@ public class ApiCategoryController {
         cates.forEach(x -> {
             int jobs = cs.countJobsByCate(x);
             CategoryDto cDto = new CategoryDto();
+            cDto.setId(x.getId());
             cDto.setName(x.getName());
             cDto.setIcon(x.getIcon());
             cDto.setJobs(jobs);

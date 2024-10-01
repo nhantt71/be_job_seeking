@@ -35,5 +35,10 @@ public class CompanyServiceImpl implements CompanyService{
     public void delete(Long id) {
         cr.deleteById(id);
     }
+
+    @Override
+    public Integer jobAmount(Company company) {
+        return company.getJobs().size();
+    }
     
 }

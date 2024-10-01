@@ -18,7 +18,10 @@ public class Job {
     @Column(nullable = false)
     private String salary;
     
+    private String name;
     private String experience;
+    
+    @Column(name = "detail", columnDefinition = "TEXT")
     private String detail;
     
     @Column(name = "created_date")

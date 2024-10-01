@@ -4,6 +4,7 @@
  */
 package com.ttn.jobapp.Pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +26,7 @@ public class Address {
     private String city;
     private String province;
     
-    @ManyToOne
-    @JoinColumn(name = "company_id")
+    @OneToOne(mappedBy = "address", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Company company;
 }
