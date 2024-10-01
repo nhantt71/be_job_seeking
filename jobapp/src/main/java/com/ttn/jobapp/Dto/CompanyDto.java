@@ -17,6 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CompanyDto {
+    private Long id;
 
     @NotEmpty(message = "Name is required")
     private String name;
@@ -26,6 +27,8 @@ public class CompanyDto {
     private String email;
 
     private List<AddressDto> address;
+    
+    private String logo;
 
     private String phoneNumber;
 
@@ -36,4 +39,6 @@ public class CompanyDto {
     private List<JobDto> jobs;
     
     private Long employerId;
+    
+    private int jobAmount;
 }

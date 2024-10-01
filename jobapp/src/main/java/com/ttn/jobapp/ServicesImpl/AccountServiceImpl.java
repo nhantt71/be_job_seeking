@@ -13,7 +13,6 @@ import com.ttn.jobapp.Repositories.EmployerRepository;
 import com.ttn.jobapp.Services.AccountService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,4 +74,5 @@ public class AccountServiceImpl implements AccountService {
 
         return unattachAccounts;
     }
+
 }

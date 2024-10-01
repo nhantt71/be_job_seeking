@@ -8,12 +8,16 @@ import lombok.Data;
 
 /**
  *
- * @author MyLaptop
+ * @author Win11
  */
 @Data
-public class CategoryDto {
-    private Long id;
-    private String name;
-    private String icon;
-    private int jobs;
+public class AuthResponseDto {
+    
+    private String accessToken;
+    private String tokenType = "Bearer ";
+    
+    public AuthResponseDto(String accessToken){
+        this.accessToken = accessToken;
+    }
+    
 }

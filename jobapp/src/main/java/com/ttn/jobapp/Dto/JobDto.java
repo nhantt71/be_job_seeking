@@ -14,11 +14,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JobDto {
+    
+    private Long id;
 
     @NotEmpty(message = "Salary is required")
     private String salary;
 
     private String experience;
+    
+    private String name;
 
     private String detail;
 
@@ -27,8 +31,16 @@ public class JobDto {
 
     @NotNull(message = "End date is required")
     private LocalDate endDate;
-
+    
+    private String companyName;
+    
+    private String companyLogo;
+    
+    private String address;
+    
     @NotNull(message = "Company ID cannot be null")
     private Long companyId;
+    
+    private Long categoryId;
     
 }
