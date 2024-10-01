@@ -5,7 +5,10 @@
 package com.ttn.jobapp.Repositories;
 
 import com.ttn.jobapp.Pojo.Job;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,4 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public interface JobRepository extends JpaRepository<Job, Long>{}
+public interface JobRepository extends JpaRepository<Job, Long> {
+
+    @Query("SELECT j FROM Job j WHERE LOWER(j.name) LIKE %:keyword% OR LOWER(j.detail) LIKE %:keyword%")
+    List<Job> findAllByKeyword(@Param("keyword") String keyword);
+
+    @Query("SELECT j FROM Job j WHERE j.category.id = :categoryId")
+    List<Job> findAllByCategory(@Param("categoryId") Long categoryId);
+
+    @Query("SELECT j FROM Job j WHERE j.company.address.province LIKE %:province%")
+    List<Job> findAllByProvince(@Param("province") String province);
+
+}

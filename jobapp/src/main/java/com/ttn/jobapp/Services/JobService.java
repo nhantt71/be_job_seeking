@@ -4,6 +4,7 @@
  */
 package com.ttn.jobapp.Services;
 
+import com.ttn.jobapp.Dto.JobDto;
 import com.ttn.jobapp.Pojo.Job;
 import java.util.List;
 
@@ -19,4 +20,7 @@ public interface JobService {
 
     void delete(Long id);
     
+    List<JobDto> getFindingJobs(String keyword, Long cateId, String province);
+    
+    Job getJobById(Long id);
 }
