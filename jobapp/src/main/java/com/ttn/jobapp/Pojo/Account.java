@@ -4,7 +4,9 @@
  */
 package com.ttn.jobapp.Pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.List;
 
 /**
  *
@@ -41,5 +43,13 @@ public class Account {
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     @JoinColumn
     private Employer employer;
+    
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<JobCandidate> jobCandidate;
+    
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Job> jobs;
 
 }

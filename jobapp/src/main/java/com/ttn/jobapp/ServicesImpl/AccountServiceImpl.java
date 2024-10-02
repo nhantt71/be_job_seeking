@@ -75,4 +75,9 @@ public class AccountServiceImpl implements AccountService {
         return unattachAccounts;
     }
 
+    @Override
+    public Account getAccountById(Long id) {
+        return ar.findById(id).get();
+    }
+
 }
