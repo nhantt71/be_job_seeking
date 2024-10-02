@@ -40,5 +40,10 @@ public class CompanyServiceImpl implements CompanyService{
     public Integer jobAmount(Company company) {
         return company.getJobs().size();
     }
+
+    @Override
+    public Company getCompanyById(Long id) {
+        return this.cr.findById(id).get();
+    }
     
 }
