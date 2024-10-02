@@ -28,5 +28,4 @@ public class Employee {
     @JsonIgnore
     private List<CV> cvs;
     
-
 }

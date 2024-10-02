@@ -28,5 +28,8 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
     @Query("SELECT j FROM Job j WHERE j.company.address.province LIKE %:province%")
     List<Job> findAllByProvince(@Param("province") String province);
+    
+    @Query("SELECT j FROM Job j WHERE j.company.id = :companyId")
+    List<Job> findAllByCompany(@Param("companyId") Long companyId);
 
 }

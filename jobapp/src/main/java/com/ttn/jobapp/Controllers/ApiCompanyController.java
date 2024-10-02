@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,6 +47,26 @@ public class ApiCompanyController {
             comDto.add(c);
         });
        
+        return new ResponseEntity<>(comDto, HttpStatus.OK);
+    }
+    
+    @GetMapping("/get-company-by-id/{id}")
+    public ResponseEntity<CompanyDto> getCompanyById(@PathVariable("id") Long id){
+        CompanyDto comDto = new CompanyDto();
+        
+        Company com = this.cs.getCompanyById(id);
+        
+        comDto.setId(com.getId());
+        comDto.setEmail(com.getEmail());
+        comDto.setInformation(com.getInformation());
+        comDto.setLogo(com.getLogo());
+        comDto.setName(com.getName());
+        comDto.setPhoneNumber(com.getPhoneNumber());
+        comDto.setWebsite(com.getWebsite());
+        comDto.setAddressDetail(com.getAddress().getDetail());
+        comDto.setCity(com.getAddress().getCity());
+        comDto.setProvince(com.getAddress().getProvince());
+        
         return new ResponseEntity<>(comDto, HttpStatus.OK);
     }
     

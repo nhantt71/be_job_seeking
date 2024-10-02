@@ -41,4 +41,11 @@ public class CompanyDto {
     private Long employerId;
     
     private int jobAmount;
+    
+    private String addressDetail;
+    
+    private String city;
+    
+    private String province;
+    
 }

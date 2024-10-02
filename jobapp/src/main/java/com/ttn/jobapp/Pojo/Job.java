@@ -2,8 +2,10 @@
 package com.ttn.jobapp.Pojo;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @lombok.Getter
@@ -31,10 +33,18 @@ public class Job {
     private LocalDate endDate;
     
     @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
+    
+    @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
     
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+    
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<JobCandidate> jobCandidate;
 }

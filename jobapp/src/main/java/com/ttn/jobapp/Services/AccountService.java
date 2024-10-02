@@ -17,5 +17,7 @@ public interface AccountService{
     void delete(Long id);
     
     List<Account> getUnattachAccounts();
+    
+    Account getAccountById(Long id);
 
 }

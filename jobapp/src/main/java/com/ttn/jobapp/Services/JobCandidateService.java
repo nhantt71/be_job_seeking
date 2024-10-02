@@ -4,20 +4,19 @@
  */
 package com.ttn.jobapp.Services;
 
-import com.ttn.jobapp.Pojo.Company;
+import com.ttn.jobapp.Pojo.JobCandidate;
 import java.util.List;
 
+/**
+ *
+ * @author MyLaptop
+ */
+public interface JobCandidateService {
+    JobCandidate save(JobCandidate jobCandidate);
 
-public interface CompanyService {
-
-    Company save(Company company);
-
-    List<Company> getCompanies();
+    List<JobCandidate> getJobCandidates();
 
     void delete(Long id);
     
-    Integer jobAmount(Company company);
-    
-    Company getCompanyById(Long id);
-    
+    List<JobCandidate> getJobsByCandidateId(Long id);
 }

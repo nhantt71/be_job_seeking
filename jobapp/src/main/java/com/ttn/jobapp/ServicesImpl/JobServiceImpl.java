@@ -86,6 +86,54 @@ public class JobServiceImpl implements JobService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<JobDto> getJobByCompany(Long companyId) {
+        List<Job> jobs = this.jr.findAllByCompany(companyId);
+        
+        return jobs.stream()
+                .map(x -> {
+                    JobDto jDto = new JobDto();
+                    jDto.setId(x.getId());
+                    jDto.setDetail(x.getDetail());
+                    jDto.setAddress(x.getCompany().getAddress().getProvince());
+                    jDto.setCompanyLogo(x.getCompany().getLogo());
+                    jDto.setName(x.getName());
+                    jDto.setCompanyId(x.getCompany().getId());
+                    jDto.setCompanyName(x.getCompany().getName());
+                    jDto.setSalary(x.getSalary());
+                    jDto.setCategoryId(x.getCategory().getId());
+                    jDto.setCreatedDate(x.getCreatedDate());
+                    jDto.setEndDate(x.getEndDate());
+                    jDto.setExperience(x.getExperience());
+                    return jDto;
+                }).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<JobDto> getJobByCategory(Long categoryId) {
+              List<Job> jobs = this.jr.findAllByCategory(categoryId);
+        
+        return jobs.stream()
+                .map(x -> {
+                    JobDto jDto = new JobDto();
+                    jDto.setId(x.getId());
+                    jDto.setDetail(x.getDetail());
+                    jDto.setAddress(x.getCompany().getAddress().getProvince());
+                    jDto.setCompanyLogo(x.getCompany().getLogo());
+                    jDto.setName(x.getName());
+                    jDto.setCompanyId(x.getCompany().getId());
+                    jDto.setCompanyName(x.getCompany().getName());
+                    jDto.setSalary(x.getSalary());
+                    jDto.setCategoryId(x.getCategory().getId());
+                    jDto.setCreatedDate(x.getCreatedDate());
+                    jDto.setEndDate(x.getEndDate());
+                    jDto.setExperience(x.getExperience());
+                    return jDto;
+                }).collect(Collectors.toList());
+
+    }
  
 
 }

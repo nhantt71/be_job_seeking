@@ -23,4 +23,8 @@ public interface JobService {
     List<JobDto> getFindingJobs(String keyword, Long cateId, String province);
     
     Job getJobById(Long id);
+    
+    List<JobDto> getJobByCompany(Long companyId);
+    
+    List<JobDto> getJobByCategory(Long categoryId);
 }
