@@ -20,4 +20,6 @@ public interface CategoryService {
     void delete(Long id);
     
     int countJobsByCate(Category category);
+    
+    Category getCateById(Long id);
 }

@@ -19,4 +19,11 @@ public interface JobCandidateService {
     void delete(Long id);
     
     List<JobCandidate> getJobsByCandidateId(Long id);
+    
+    JobCandidate getJobCandidateByJobAndCandidate(Long accountId, Long jobId);
+    
+    List<JobCandidate> getAppliedJobs(Long accountId);
+    
+    List<JobCandidate> getSavedJobs(Long accountId);
+    
 }

@@ -30,7 +30,7 @@ public class Account {
 
     private String avatar;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean available = false;
 
     @Column(nullable = false)

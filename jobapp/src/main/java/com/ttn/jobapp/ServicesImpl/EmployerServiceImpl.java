@@ -35,5 +35,10 @@ public class EmployerServiceImpl implements EmployerService{
     public void delete(Long id) {
         er.deleteById(id);
     }
+
+    @Override
+    public Employer getEmployerById(Long id) {
+        return er.findById(id).get();
+    }
     
 }

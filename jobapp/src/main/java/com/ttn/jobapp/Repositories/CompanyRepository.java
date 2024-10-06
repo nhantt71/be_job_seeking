@@ -5,7 +5,10 @@
 package com.ttn.jobapp.Repositories;
 
 import com.ttn.jobapp.Pojo.Company;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,4 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public interface CompanyRepository extends JpaRepository<Company, Long>{}
+public interface CompanyRepository extends JpaRepository<Company, Long>{
+        
+    @Query("SELECT c FROM Company c WHERE LOWER(c.name) LIKE %:keyword%")
+    List<Company> getFindingCompanies(@Param("keyword") String keyword);
+    
+}

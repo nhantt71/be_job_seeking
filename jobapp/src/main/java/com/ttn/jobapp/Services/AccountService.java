@@ -6,6 +6,7 @@ package com.ttn.jobapp.Services;
 
 import com.ttn.jobapp.Pojo.Account;
 import java.util.List;
+import org.springframework.security.core.userdetails.User;
 
 
 public interface AccountService{
@@ -19,5 +20,9 @@ public interface AccountService{
     List<Account> getUnattachAccounts();
     
     Account getAccountById(Long id);
+    
+    User getCurrentUser();
+    
+    Account getAccountByEmail(String email);
 
 }

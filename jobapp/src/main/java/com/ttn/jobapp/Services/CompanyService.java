@@ -20,4 +20,6 @@ public interface CompanyService {
     
     Company getCompanyById(Long id);
     
+    List<Company> getFindingCompanies(String keyword);
+    
 }

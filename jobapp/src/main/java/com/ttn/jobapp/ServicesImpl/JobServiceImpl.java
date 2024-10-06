@@ -39,9 +39,9 @@ public class JobServiceImpl implements JobService {
     public void delete(Long id) {
         jr.deleteById(id);
     }
-    
+
     @Override
-    public Job getJobById(Long id){
+    public Job getJobById(Long id) {
         return jr.findById(id).get();
     }
 
@@ -90,7 +90,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<JobDto> getJobByCompany(Long companyId) {
         List<Job> jobs = this.jr.findAllByCompany(companyId);
-        
+
         return jobs.stream()
                 .map(x -> {
                     JobDto jDto = new JobDto();
@@ -113,8 +113,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<JobDto> getJobByCategory(Long categoryId) {
-              List<Job> jobs = this.jr.findAllByCategory(categoryId);
-        
+        List<Job> jobs = this.jr.findAllByCategory(categoryId);
+
         return jobs.stream()
                 .map(x -> {
                     JobDto jDto = new JobDto();
@@ -134,6 +134,91 @@ public class JobServiceImpl implements JobService {
                 }).collect(Collectors.toList());
 
     }
- 
+
+    @Override
+    public List<JobDto> getRecentJobs() {
+        LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
+
+        List<Job> jobs = jr.findRecentJobs(sevenDaysAgo);
+
+        return jobs.stream()
+                .map(x -> {
+                    JobDto jDto = new JobDto();
+                    jDto.setId(x.getId());
+                    jDto.setDetail(x.getDetail());
+                    jDto.setAddress(x.getCompany().getAddress().getProvince());
+                    jDto.setCompanyLogo(x.getCompany().getLogo());
+                    jDto.setName(x.getName());
+                    jDto.setCompanyId(x.getCompany().getId());
+                    jDto.setCompanyName(x.getCompany().getName());
+                    jDto.setSalary(x.getSalary());
+                    jDto.setCategoryId(x.getCategory().getId());
+                    jDto.setCreatedDate(x.getCreatedDate());
+                    jDto.setEndDate(x.getEndDate());
+                    jDto.setExperience(x.getExperience());
+                    return jDto;
+                }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<JobDto> getRelatedJobsByKeyword(Long jobId, String keyword) {
+        Job j = this.jr.findById(jobId).get();
+        List<Job> relatedJobs = new ArrayList<>();
+
+        String[] keywords = keyword.toLowerCase().split("\\s+");
+        for (String key : keywords) {
+            List<Job> jobs = jr.findRelatedJobsByKeyword(key, jobId);
+            relatedJobs.addAll(jobs);
+        }
+
+        relatedJobs.addAll(jr.findAllByCategory(j.getCategory().getId()));
+
+        relatedJobs.addAll(jr.findAllByProvince(j.getCompany().getAddress().getProvince()));
+
+        return relatedJobs.stream()
+                .distinct()
+                .map(x -> {
+                    JobDto jDto = new JobDto();
+                    jDto.setId(x.getId());
+                    jDto.setDetail(x.getDetail());
+                    jDto.setAddress(x.getCompany().getAddress().getProvince());
+                    jDto.setCompanyLogo(x.getCompany().getLogo());
+                    jDto.setName(x.getName());
+                    jDto.setCompanyId(x.getCompany().getId());
+                    jDto.setCompanyName(x.getCompany().getName());
+                    jDto.setSalary(x.getSalary());
+                    jDto.setCategoryId(x.getCategory().getId());
+                    jDto.setCreatedDate(x.getCreatedDate());
+                    jDto.setEndDate(x.getEndDate());
+                    jDto.setExperience(x.getExperience());
+                    return jDto;
+                }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<JobDto> findCompanyJobsByKeyword(String keyword, Long companyId) {
+        List<Job> jobs = this.jr.findCompanyJobsByKeyword(keyword, companyId);
+        
+        List<JobDto> jDto = jobs.stream()
+                .distinct()
+                .map(x -> {
+                    JobDto jobDto = new JobDto();
+                    jobDto.setId(x.getId());
+                    jobDto.setDetail(x.getDetail());
+                    jobDto.setAddress(x.getCompany().getAddress().getProvince());
+                    jobDto.setCompanyLogo(x.getCompany().getLogo());
+                    jobDto.setName(x.getName());
+                    jobDto.setCompanyId(x.getCompany().getId());
+                    jobDto.setCompanyName(x.getCompany().getName());
+                    jobDto.setSalary(x.getSalary());
+                    jobDto.setCategoryId(x.getCategory().getId());
+                    jobDto.setCreatedDate(x.getCreatedDate());
+                    jobDto.setEndDate(x.getEndDate());
+                    jobDto.setExperience(x.getExperience());
+                    return jobDto;
+                }).collect(Collectors.toList());
+        
+        return jDto;
+    }
 
 }
