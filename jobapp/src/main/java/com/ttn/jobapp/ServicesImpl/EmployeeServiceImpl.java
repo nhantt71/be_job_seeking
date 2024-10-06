@@ -36,4 +36,9 @@ public class EmployeeServiceImpl implements EmployeeService{
         er.deleteById(id);
     }
 
+    @Override
+    public Employee getEmployeeById(Long id) {
+        return er.findById(id).get();
+    }
+
 }

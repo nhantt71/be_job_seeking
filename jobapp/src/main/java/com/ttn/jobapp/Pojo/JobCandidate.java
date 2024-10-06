@@ -16,10 +16,11 @@ import lombok.Data;
 @Table(name = "job_candidate")
 @Data
 public class JobCandidate {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false, unique = true)
     private Account account;
@@ -28,7 +29,13 @@ public class JobCandidate {
     @JoinColumn(name = "job_id", nullable = false, unique = true)
     private Job job;
 
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean saved = false;
+
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean applied = false;
+
     @Column(name = "saved_at", nullable = false)
     private LocalDateTime savedAt;
-    
+
 }

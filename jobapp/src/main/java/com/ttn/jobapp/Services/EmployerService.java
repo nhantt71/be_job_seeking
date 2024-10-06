@@ -18,4 +18,6 @@ public interface EmployerService {
     List<Employer> getEmployers();
 
     void delete(Long id);
+    
+    Employer getEmployerById(Long id);
 }

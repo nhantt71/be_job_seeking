@@ -45,5 +45,10 @@ public class CompanyServiceImpl implements CompanyService{
     public Company getCompanyById(Long id) {
         return this.cr.findById(id).get();
     }
+
+    @Override
+    public List<Company> getFindingCompanies(String keyword) {
+        return this.cr.getFindingCompanies(keyword);
+    }
     
 }

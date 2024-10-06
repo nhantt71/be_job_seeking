@@ -4,7 +4,6 @@
  */
 package com.ttn.jobapp.Controllers;
 
-import com.ttn.jobapp.Dto.JobCandidateDto;
 import com.ttn.jobapp.Pojo.Account;
 import com.ttn.jobapp.Pojo.Job;
 import com.ttn.jobapp.Pojo.JobCandidate;
@@ -18,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,36 +42,62 @@ public class ApiJobCandidateController {
     @PostMapping("/save-job")
     public ResponseEntity<String> saveJob(@RequestParam Map<String, String> params) {
 
-        Long jobId = null;
-        Long candidateId = null;
+        Long jobId = parseLongParam(params.get("jobId"));
+        Long candidateId = parseLongParam(params.get("candidateId"));
 
-        if (params.containsKey("jobId") && params.get("jobId") != null) {
-            try {
-                jobId = Long.valueOf(params.get("jobId"));
-            } catch (NumberFormatException e) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
+        if (jobId == null || candidateId == null) {
+            return new ResponseEntity<>("Invalid jobId or candidateId", HttpStatus.BAD_REQUEST);
         }
-        if (params.containsKey("candidateId") && params.get("candidateId") != null) {
-            try {
-                candidateId = Long.valueOf(params.get("candidateId"));
-            } catch (NumberFormatException e) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-        }
-        
+
         Job job = this.js.getJobById(jobId);
         Account candidate = this.as.getAccountById(candidateId);
-                 
-        JobCandidate jobCandidate = new JobCandidate();
 
-        jobCandidate.setJob(job);
-        jobCandidate.setAccount(candidate);
+        JobCandidate jobCandidate = this.jcs.getJobCandidateByJobAndCandidate(candidateId, jobId);
+
+        if (jobCandidate == null) {
+            jobCandidate = new JobCandidate();
+            jobCandidate.setJob(job);
+            jobCandidate.setAccount(candidate);
+        }
+
+        jobCandidate.setSaved(Boolean.TRUE);
         jobCandidate.setSavedAt(LocalDateTime.now());
 
         this.jcs.save(jobCandidate);
-        
-        return new ResponseEntity<>("Saved job successfully!", HttpStatus.CREATED);
+
+        return new ResponseEntity<>("Job saved successfully!", HttpStatus.CREATED);
     }
 
+    @PostMapping("/unsave-job")
+    public ResponseEntity<String> unsaveJob(@RequestParam Map<String, String> params) {
+
+        Long jobId = parseLongParam(params.get("jobId"));
+        Long candidateId = parseLongParam(params.get("candidateId"));
+
+        if (jobId == null || candidateId == null) {
+            return new ResponseEntity<>("Invalid jobId or candidateId", HttpStatus.BAD_REQUEST);
+        }
+
+        JobCandidate jobCandidate = this.jcs.getJobCandidateByJobAndCandidate(candidateId, jobId);
+
+        if (jobCandidate == null) {
+            return new ResponseEntity<>("No saved job found for this candidate", HttpStatus.NOT_FOUND);
+        }
+
+        jobCandidate.setSaved(Boolean.FALSE);
+        jobCandidate.setSavedAt(LocalDateTime.now());
+
+        this.jcs.save(jobCandidate);
+
+        return new ResponseEntity<>("Job unsaved successfully!", HttpStatus.OK);
+    }
+    
+
+    private Long parseLongParam(String param) {
+        try {
+            return param != null ? Long.valueOf(param) : null;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 }

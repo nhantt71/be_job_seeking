@@ -21,4 +21,6 @@ public interface EmployeeService {
     
     void delete(Long id);
     
+    Employee getEmployeeById(Long id);
+    
 }

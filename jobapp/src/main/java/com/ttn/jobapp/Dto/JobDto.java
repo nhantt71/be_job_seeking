@@ -38,6 +38,8 @@ public class JobDto {
     
     private String address;
     
+    private Boolean enable = false;
+    
     @NotNull(message = "Company ID cannot be null")
     private Long companyId;
     

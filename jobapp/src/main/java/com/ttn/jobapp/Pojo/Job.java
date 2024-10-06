@@ -32,8 +32,12 @@ public class Job {
     @Column(name = "end_date")
     private LocalDate endDate;
     
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean enable = false;
+    
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
+    @JsonIgnore
     private Account account;
     
     @ManyToOne

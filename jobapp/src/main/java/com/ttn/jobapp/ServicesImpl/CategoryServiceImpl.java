@@ -40,5 +40,10 @@ public class CategoryServiceImpl implements CategoryService{
     public int countJobsByCate(Category category) {
         return category.getJobs().size();
     }
+
+    @Override
+    public Category getCateById(Long id) {
+        return cr.findById(id).get();
+    }
     
 }

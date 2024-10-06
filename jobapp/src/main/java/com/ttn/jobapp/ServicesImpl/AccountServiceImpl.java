@@ -4,6 +4,7 @@
  */
 package com.ttn.jobapp.ServicesImpl;
 
+import com.ttn.jobapp.Configs.CustomUserDetailsService;
 import com.ttn.jobapp.Pojo.Account;
 import com.ttn.jobapp.Pojo.Employee;
 import com.ttn.jobapp.Pojo.Employer;
@@ -15,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,6 +36,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private EmployerRepository employerRepo;
+    
+    @Autowired
+    private CustomUserDetailsService cuds;
 
     @Override
     public Account save(Account account) {
@@ -78,6 +85,23 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account getAccountById(Long id) {
         return ar.findById(id).get();
+    }
+    
+    
+
+    @Override
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.isAuthenticated()){
+            String email = authentication.getName();
+            return (User) cuds.loadUserByUsername(email);
+        }
+        return null;
+    }
+
+    @Override
+    public Account getAccountByEmail(String email) {
+        return ar.findByEmail(email);
     }
 
 }

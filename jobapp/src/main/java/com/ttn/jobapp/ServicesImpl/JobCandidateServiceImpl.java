@@ -40,5 +40,20 @@ public class JobCandidateServiceImpl implements JobCandidateService{
     public List<JobCandidate> getJobsByCandidateId(Long id) {
         return this.jcr.getJobsByAccountId(id);
     }
+
+    @Override
+    public JobCandidate getJobCandidateByJobAndCandidate(Long accountId, Long jobId) {
+        return this.jcr.getJobCandidateByJobAndCandidate(accountId, jobId);
+    }
+
+    @Override
+    public List<JobCandidate> getAppliedJobs(Long accountId) {
+        return this.jcr.getAppliedJobs(accountId);
+    }
+
+    @Override
+    public List<JobCandidate> getSavedJobs(Long accountId) {
+        return this.jcr.getSavedJobs(accountId);
+    }
     
 }

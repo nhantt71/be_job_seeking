@@ -25,4 +25,8 @@ public class EmployerDto {
 
     @NotNull(message = "Company ID cannot be null")
     private Long companyId;
+    
+    private String fullname;
+    
+    private String phoneNumber;
 }

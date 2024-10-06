@@ -47,8 +47,8 @@ public class JWTGenerator {
     }
 
     public String getEmailFromJWT(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(SecurityConstants.JWT_SECRET)
+         Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
@@ -56,7 +56,8 @@ public class JWTGenerator {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SecurityConstants.JWT_SECRET).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(secretKey)  // Sử dụng secretKey ở đây
+                    .parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException | MalformedJwtException | UnsupportedJwtException | SignatureException | IllegalArgumentException ex) {
             throw new AuthenticationCredentialsNotFoundException("JWT was expired or incorrect");
