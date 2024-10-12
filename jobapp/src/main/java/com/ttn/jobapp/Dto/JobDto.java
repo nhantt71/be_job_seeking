@@ -45,4 +45,6 @@ public class JobDto {
     
     private Long categoryId;
     
+    private String categoryName;
+    
 }

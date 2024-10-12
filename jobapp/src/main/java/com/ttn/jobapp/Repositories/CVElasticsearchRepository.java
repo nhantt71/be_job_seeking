@@ -4,16 +4,13 @@
  */
 package com.ttn.jobapp.Repositories;
 
-import com.ttn.jobapp.Pojo.Employee;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.ttn.jobapp.Document.CVElasticsearch;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author Win11
  */
 @Repository
-@Transactional
-public interface EmployeeRepository extends JpaRepository<Employee, Long>{}
-
+public interface CVElasticsearchRepository extends ElasticsearchRepository<CVElasticsearch, String>{}

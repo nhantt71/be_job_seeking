@@ -35,5 +35,15 @@ public class CVServiceImpl implements CVService{
     public void delete(Long id) {
         cvr.deleteById(id);
     }
+
+    @Override
+    public List<CV> getCVsByCandidateId(Long id) {
+        return this.cvr.getCVsByCandidateId(id);
+    }
+
+    @Override
+    public CV getCVById(Long id) {
+        return this.cvr.findById(id).get();
+    }
     
 }

@@ -28,7 +28,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendEmailWithAttachment(String to, String from, String subject,
-            String body, MultipartFile file)
+            String body, ByteArrayResource fileResource)
             throws MessagingException, IOException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -38,12 +38,28 @@ public class EmailServiceImpl implements EmailService {
         helper.setSubject(subject);
         helper.setText(body);
 
-        String fileName = file.getOriginalFilename();
-        helper.addAttachment(fileName, new ByteArrayResource(file.getBytes()));
+        String fileName = fileResource.getFilename();
+        helper.addAttachment(fileName, fileResource);
 
         mailSender.send(message);
     }
-    
+
+    @Override
+    public void sendEmailWithAttachment(String to, String from, String subject, String body, MultipartFile file) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(to);
+        helper.setFrom(from);
+        helper.setSubject(subject);
+        helper.setText(body, true); // Đặt true để hỗ trợ HTML
+
+        String fileName = file.getOriginalFilename();
+        helper.addAttachment(fileName, file);
+
+        mailSender.send(message);
+    }
+
     @Override
     public void sendSimpleEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();

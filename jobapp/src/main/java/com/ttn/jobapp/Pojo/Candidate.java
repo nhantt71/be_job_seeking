@@ -7,8 +7,8 @@ import java.util.List;
 @Entity
 @lombok.Getter
 @lombok.Setter
-@Table(name = "employee")
-public class Employee {
+@Table(name = "candidate")
+public class Candidate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,12 +20,23 @@ public class Employee {
     @Column(name = "phone_number")
     private String phoneNumber;
     
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean available = false;
+    
     @OneToOne
     @JoinColumn(name = "account_id", unique = true)
     private Account account;
     
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<CV> cvs;
+    
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<JobCandidate> jobCandidate;
+    
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<CompanyCandidate> companyCandidate;
     
 }

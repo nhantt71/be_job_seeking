@@ -6,6 +6,7 @@ package com.ttn.jobapp.Services;
 
 import jakarta.mail.MessagingException;
 import java.io.IOException;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -14,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface EmailService {
     void sendEmailWithAttachment(String to, String from, String subject,
-            String body, MultipartFile file) throws MessagingException, IOException;
+            String body, ByteArrayResource fileResource) throws MessagingException, IOException;
+    
+    void sendEmailWithAttachment(String to, String from, String subject, String body, MultipartFile file) throws MessagingException;
     
     void sendSimpleEmail(String to, String subject, String body);
 }

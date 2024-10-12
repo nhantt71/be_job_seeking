@@ -5,12 +5,8 @@
 package com.ttn.jobapp.ServicesImpl;
 
 import com.ttn.jobapp.Configs.CustomUserDetailsService;
-import com.ttn.jobapp.Pojo.Account;
-import com.ttn.jobapp.Pojo.Employee;
-import com.ttn.jobapp.Pojo.Employer;
-import com.ttn.jobapp.Repositories.AccountRepository;
-import com.ttn.jobapp.Repositories.EmployeeRepository;
-import com.ttn.jobapp.Repositories.EmployerRepository;
+import com.ttn.jobapp.Pojo.*;
+import com.ttn.jobapp.Repositories.*;
 import com.ttn.jobapp.Services.AccountService;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +28,10 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepository ar;
 
     @Autowired
-    private EmployeeRepository employeeRepo;
+    private CandidateRepository candidateRepo;
 
     @Autowired
-    private EmployerRepository employerRepo;
+    private RecruiterRepository recruiterRepo;
     
     @Autowired
     private CustomUserDetailsService cuds;
@@ -57,19 +53,19 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> getUnattachAccounts() {
-        List<Employer> allEmployers = employerRepo.findAll();
-        List<Employee> allEmployees = employeeRepo.findAll();
+        List<Recruiter> allRecruiters = recruiterRepo.findAll();
+        List<Candidate> allCandidates = candidateRepo.findAll();
         List<Account> allAccounts = ar.findAll();
 
         List<Long> accountIds = new ArrayList<>();
 
-        allEmployees.forEach(x -> {
+        allCandidates.forEach(x -> {
             if (x.getAccount() != null) {
                 accountIds.add(x.getAccount().getId());
             }
         });
 
-        allEmployers.forEach(x -> {
+        allRecruiters.forEach(x -> {
             if (x.getAccount() != null) {
                 accountIds.add(x.getAccount().getId());
             }
@@ -103,5 +99,11 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccountByEmail(String email) {
         return ar.findByEmail(email);
     }
+
+    @Override
+    public String getRoleByEmail(String email) {
+        return ar.getRoleByEmail(email);
+    }
+
 
 }

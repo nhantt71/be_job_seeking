@@ -54,7 +54,7 @@ public class AccountController {
     @GetMapping("/create")
     public String showCreatePage(Model model) {
         AccountDto accountDto = new AccountDto();
-        accountDto.setRole("employee");
+        accountDto.setRole("candidate");
         model.addAttribute("accountDto", accountDto);
         return "admin/account/form";
     }
@@ -78,7 +78,6 @@ public class AccountController {
         Account account = new Account();
         account.setEmail(accountDto.getEmail());
         account.setPassword(accountDto.getPassword());
-        account.setAvailable(Boolean.FALSE);
         account.setRole(accountDto.getRole());
 
         Map res = this.cloudinary.uploader().upload(accountDto.getImageFile().getBytes(), ObjectUtils.asMap("resource_type", "auto"));

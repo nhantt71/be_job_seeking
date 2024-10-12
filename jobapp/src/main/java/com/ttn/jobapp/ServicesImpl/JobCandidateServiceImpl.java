@@ -38,7 +38,7 @@ public class JobCandidateServiceImpl implements JobCandidateService{
 
     @Override
     public List<JobCandidate> getJobsByCandidateId(Long id) {
-        return this.jcr.getJobsByAccountId(id);
+        return this.jcr.getJobsByCandidateId(id);
     }
 
     @Override
@@ -47,13 +47,13 @@ public class JobCandidateServiceImpl implements JobCandidateService{
     }
 
     @Override
-    public List<JobCandidate> getAppliedJobs(Long accountId) {
-        return this.jcr.getAppliedJobs(accountId);
+    public List<JobCandidate> getAppliedJobs(Long candidateId) {
+        return this.jcr.getAppliedJobs(candidateId);
     }
 
     @Override
-    public List<JobCandidate> getSavedJobs(Long accountId) {
-        return this.jcr.getSavedJobs(accountId);
+    public List<JobCandidate> getSavedJobs(Long candidateId) {
+        return this.jcr.getSavedJobs(candidateId);
     }
     
 }

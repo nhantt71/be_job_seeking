@@ -4,7 +4,7 @@
  */
 package com.ttn.jobapp.Repositories;
 
-import com.ttn.jobapp.Pojo.Account;
+import com.ttn.jobapp.Pojo.Candidate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,11 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public interface AccountRepository extends JpaRepository<Account, Long>{
-    Account findByEmail(String email);
-    
-    Boolean existsByEmail(String email);
-    
-    @Query("SELECT a.role FROM Account a WHERE a.email LIKE :email")
-    String getRoleByEmail(@Param("email") String email);
+public interface CandidateRepository extends JpaRepository<Candidate, Long>{
+    @Query("SELECT c FROM Candidate c WHERE c.account.email LIKE :email")
+    Candidate getCandidateByEmail(@Param("email") String email);
 }
+
