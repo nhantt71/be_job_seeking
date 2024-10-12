@@ -13,7 +13,9 @@ import lombok.Data;
  * @author MyLaptop
  */
 @Entity
-@Table(name = "job_candidate")
+@Table(name = "job_candidate", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"candidate_id", "job_id"})
+})
 @Data
 public class JobCandidate {
 
@@ -22,11 +24,11 @@ public class JobCandidate {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "account_id", nullable = false, unique = true)
-    private Account account;
+    @JoinColumn(name = "candidate_id", nullable = false)
+    private Candidate candidate;
 
     @ManyToOne
-    @JoinColumn(name = "job_id", nullable = false, unique = true)
+    @JoinColumn(name = "job_id", nullable = false)
     private Job job;
 
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")

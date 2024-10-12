@@ -20,10 +20,10 @@ public interface JobCandidateService {
     
     List<JobCandidate> getJobsByCandidateId(Long id);
     
-    JobCandidate getJobCandidateByJobAndCandidate(Long accountId, Long jobId);
+    JobCandidate getJobCandidateByJobAndCandidate(Long candidateId, Long jobId);
     
-    List<JobCandidate> getAppliedJobs(Long accountId);
+    List<JobCandidate> getAppliedJobs(Long candidateId);
     
-    List<JobCandidate> getSavedJobs(Long accountId);
+    List<JobCandidate> getSavedJobs(Long candidateId);
     
 }

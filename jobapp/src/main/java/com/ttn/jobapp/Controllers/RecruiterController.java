@@ -5,13 +5,13 @@
 package com.ttn.jobapp.Controllers;
 
 import com.ttn.jobapp.Services.CompanyService;
-import com.ttn.jobapp.Dto.EmployerDto;
+import com.ttn.jobapp.Dto.RecruiterDto;
 import com.ttn.jobapp.Pojo.Account;
 import com.ttn.jobapp.Pojo.Company;
-import com.ttn.jobapp.Pojo.Employer;
-import com.ttn.jobapp.Repositories.EmployerRepository;
+import com.ttn.jobapp.Pojo.Recruiter;
+import com.ttn.jobapp.Repositories.RecruiterRepository;
 import com.ttn.jobapp.Services.AccountService;
-import com.ttn.jobapp.Services.EmployerService;
+import com.ttn.jobapp.Services.RecruiterService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
-@RequestMapping("admin/employer")
-public class EmployerController {
+@RequestMapping("admin/recruiter")
+public class RecruiterController {
     
     @Autowired
-    private EmployerService es;
+    private RecruiterService rs;
     
     @Autowired
-    private EmployerRepository er;
+    private RecruiterRepository rr;
     
     @Autowired
     private AccountService as;
@@ -38,29 +38,29 @@ public class EmployerController {
     private CompanyService cs;
     
     @GetMapping
-    public String employer(Model model) {
-        model.addAttribute("employers", this.es.getEmployers());
-        return "admin/employer/index";
+    public String recruiter(Model model) {
+        model.addAttribute("employers", this.rs.getRecruiters());
+        return "admin/recruiter/index";
     }
     
     @GetMapping("/delete")
     public String deleteEmployer(@RequestParam("id") Long id) {
-        Employer e = er.findById(id).get();
-        as.delete(e.getAccount().getId());
-        e.setCompany(null);
-        this.es.delete(e.getId());
-        return "redirect:/admin/employer";
+        Recruiter r = rr.findById(id).get();
+        as.delete(r.getAccount().getId());
+        r.setCompany(null);
+        this.rs.delete(r.getId());
+        return "redirect:/admin/recruiter";
     }
     
     @GetMapping("/create")
     public String showCreatePage(Model model) {
-        EmployerDto employerDto = new EmployerDto();
+        RecruiterDto recruiterDto = new RecruiterDto();
         List<Company> companies = cs.getCompanies();
         List<Account> accounts = as.getUnattachAccounts();
-        model.addAttribute("employerDto", employerDto);
+        model.addAttribute("recruiterDto", recruiterDto);
         model.addAttribute("companies", companies);
         model.addAttribute("accounts", accounts);
-        return "admin/employer/form";
+        return "admin/recruiter/form";
     }
     
 }

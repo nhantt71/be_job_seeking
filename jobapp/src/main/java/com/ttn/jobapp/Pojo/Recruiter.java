@@ -8,13 +8,15 @@ package com.ttn.jobapp.Pojo;
  *
  * @author Win11
  */
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @lombok.Getter
 @lombok.Setter
-@Table(name = "employer")
-public class Employer {
+@Table(name = "recruiter")
+public class Recruiter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,13 +42,27 @@ public class Employer {
             throw new IllegalArgumentException("Invalid gender value. Must be 'Male', 'Female', or 'Other'.");
         }
     }
+    
+    @OneToOne(mappedBy = "recruiter", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Company companyCreater;
 
     @OneToOne
     @JoinColumn(name = "account_id", unique = true)
+    @JsonIgnore
     private Account account;
 
     @ManyToOne
-    @JoinColumn(name = "company_id")
+    @JsonIgnore
+    @JoinColumn(name = "company_id", nullable = true)
     private Company company;
+   
+    @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Job> jobs;
+    
+    @OneToOne(mappedBy = "recruiter", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private TemporaryRecruiter temporaryRecruiter;
 
 }

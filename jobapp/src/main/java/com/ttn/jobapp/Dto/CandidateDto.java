@@ -15,7 +15,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class EmployeeDto {
+public class CandidateDto {
 
     @NotEmpty(message = "Full name is required")
     private String fullname;
@@ -25,5 +25,7 @@ public class EmployeeDto {
     
     @NotNull(message = "Account is required")
     private Long accountId;
+    
+    private Boolean available;
 
 }

@@ -4,37 +4,32 @@
  */
 package com.ttn.jobapp.Pojo;
 
+import jakarta.persistence.*;
+import lombok.Data;
+
+
 /**
  *
  * @author Win11
  */
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import java.time.LocalDate;
-
 @Entity
-@lombok.Getter
-@lombok.Setter
-@Table(name = "cv")
-public class CV {
-
+@Table(name = "company_candidate", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"candidate_id", "company_id"})
+})
+@Data
+public class CompanyCandidate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "file_cv")
-    private String fileCV;
-
-    private String name;
-    
-    private Boolean mainCV = false;
-
-    @Column(name = "updated_date")
-    private LocalDate updatedDate;
-
     @ManyToOne
     @JoinColumn(name = "candidate_id", nullable = false)
-    @JsonIgnore
     private Candidate candidate;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
+
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean saved = false;
 }

@@ -39,6 +39,13 @@ public class Company {
     @Column(name = "information", columnDefinition = "TEXT")
     private String information;
     
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean verified = false;
+    
+    @OneToOne
+    @JoinColumn(name = "created_recruiter_id", nullable = true)
+    private Recruiter recruiter;
+    
     @OneToOne
     @JoinColumn(name = "address_id")
     private Address address;
@@ -49,6 +56,14 @@ public class Company {
     
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Employer> employers;
+    private List<Recruiter> recruiters;
+    
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<CompanyCandidate> companyCandidate;
+    
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<TemporaryRecruiter> temporaryRecruiter;
 
 }

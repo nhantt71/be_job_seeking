@@ -4,23 +4,25 @@
  */
 package com.ttn.jobapp.Services;
 
-import com.ttn.jobapp.Pojo.CV;
+import com.ttn.jobapp.Pojo.Candidate;
 import java.util.List;
 
-/**
+/*
  *
  * @author Win11
  */
 
-public interface CVService {
+
+public interface CandidateService {
     
-    CV save(CV cv);
-
-    List<CV> getCVs();
-
+    Candidate save(Candidate candidate);
+    
+    List<Candidate> getCandidates();
+    
     void delete(Long id);
     
-    List<CV> getCVsByCandidateId(Long id);
+    Candidate getCandidateById(Long id);
     
-    CV getCVById(Long id);
+    Candidate getCandidateByEmail(String email);
+    
 }

@@ -30,26 +30,17 @@ public class Account {
 
     private String avatar;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean available = false;
-
     @Column(nullable = false)
     private String role;
     
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     @JoinColumn
-    private Employee employee;
+    @JsonIgnore
+    private Candidate candidate;
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     @JoinColumn
-    private Employer employer;
-    
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<JobCandidate> jobCandidate;
-    
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Job> jobs;
+    private Recruiter recruiter;
 
 }

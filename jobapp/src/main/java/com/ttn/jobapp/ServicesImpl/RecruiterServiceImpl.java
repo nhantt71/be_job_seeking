@@ -4,9 +4,9 @@
  */
 package com.ttn.jobapp.ServicesImpl;
 
-import com.ttn.jobapp.Pojo.Employer;
-import com.ttn.jobapp.Repositories.EmployerRepository;
-import com.ttn.jobapp.Services.EmployerService;
+import com.ttn.jobapp.Pojo.Recruiter;
+import com.ttn.jobapp.Repositories.RecruiterRepository;
+import com.ttn.jobapp.Services.RecruiterService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,18 +16,18 @@ import org.springframework.stereotype.Service;
  * @author Win11
  */
 @Service
-public class EmployerServiceImpl implements EmployerService{
+public class RecruiterServiceImpl implements RecruiterService{
     
     @Autowired
-    private EmployerRepository er;
+    private RecruiterRepository er;
 
     @Override
-    public Employer save(Employer employer) {
-        return er.save(employer);
+    public Recruiter save(Recruiter recruiter) {
+        return er.save(recruiter);
     }
 
     @Override
-    public List<Employer> getEmployers() {
+    public List<Recruiter> getRecruiters() {
         return er.findAll();
     }
 
@@ -37,8 +37,13 @@ public class EmployerServiceImpl implements EmployerService{
     }
 
     @Override
-    public Employer getEmployerById(Long id) {
+    public Recruiter getRecruiterById(Long id) {
         return er.findById(id).get();
+    }
+
+    @Override
+    public Recruiter getRecruiterByEmail(String email) {
+        return er.getRecruiterByEmail(email);
     }
     
 }

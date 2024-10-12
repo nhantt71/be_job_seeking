@@ -4,20 +4,22 @@
  */
 package com.ttn.jobapp.Services;
 
-import com.ttn.jobapp.Pojo.Employer;
+import com.ttn.jobapp.Pojo.Recruiter;
 import java.util.List;
 
 /**
  *
  * @author Win11
  */
-public interface EmployerService {
+public interface RecruiterService {
 
-    Employer save(Employer employer);
+    Recruiter save(Recruiter recruiter);
 
-    List<Employer> getEmployers();
+    List<Recruiter> getRecruiters();
 
     void delete(Long id);
     
-    Employer getEmployerById(Long id);
+    Recruiter getRecruiterById(Long id);
+    
+    Recruiter getRecruiterByEmail(String email);
 }

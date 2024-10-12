@@ -4,18 +4,21 @@
  */
 package com.ttn.jobapp.Controllers;
 
-import com.ttn.jobapp.Pojo.Account;
+import com.ttn.jobapp.Pojo.Candidate;
 import com.ttn.jobapp.Pojo.Job;
 import com.ttn.jobapp.Pojo.JobCandidate;
-import com.ttn.jobapp.Services.AccountService;
+import com.ttn.jobapp.Services.CandidateService;
 import com.ttn.jobapp.Services.JobCandidateService;
 import com.ttn.jobapp.Services.JobService;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +37,7 @@ public class ApiJobCandidateController {
     private JobCandidateService jcs;
 
     @Autowired
-    private AccountService as;
+    private CandidateService as;
 
     @Autowired
     private JobService js;
@@ -50,14 +53,14 @@ public class ApiJobCandidateController {
         }
 
         Job job = this.js.getJobById(jobId);
-        Account candidate = this.as.getAccountById(candidateId);
+        Candidate candidate = this.as.getCandidateById(candidateId);
 
         JobCandidate jobCandidate = this.jcs.getJobCandidateByJobAndCandidate(candidateId, jobId);
 
         if (jobCandidate == null) {
             jobCandidate = new JobCandidate();
             jobCandidate.setJob(job);
-            jobCandidate.setAccount(candidate);
+            jobCandidate.setCandidate(candidate);
         }
 
         jobCandidate.setSaved(Boolean.TRUE);
@@ -100,4 +103,18 @@ public class ApiJobCandidateController {
             return null;
         }
     }
+    
+    @GetMapping("/check-saved-job")
+    public ResponseEntity<Boolean> checkSavedJob(@RequestParam("candidateId") Long candidateId,
+            @RequestParam("jobId") Long jobId){
+        JobCandidate jc = this.jcs.getJobCandidateByJobAndCandidate(candidateId, jobId);
+        
+        if (jc.getSaved()){
+            return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
+        } else{
+            return new ResponseEntity<>(Boolean.FALSE, HttpStatus.OK);
+        }
+    }
+    
+
 }

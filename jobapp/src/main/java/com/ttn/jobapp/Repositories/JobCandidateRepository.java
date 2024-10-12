@@ -20,16 +20,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface JobCandidateRepository extends JpaRepository<JobCandidate, Long>{
     
-    @Query("SELECT jc FROM JobCandidate jc WHERE jc.account.id = :accountId")
-    List<JobCandidate> getJobsByAccountId(@Param("accountId") Long accountId);
+    @Query("SELECT jc FROM JobCandidate jc WHERE jc.candidate.id = :candidateId")
+    List<JobCandidate> getJobsByCandidateId(@Param("candidateId") Long candidateId);
     
-    @Query("SELECT jc FROM JobCandidate jc WHERE jc.account.id = :accountId AND jc.job.id = :jobId")
-    JobCandidate getJobCandidateByJobAndCandidate(@Param("accountId") Long accountId, @Param("jobId") Long jobId);
+    @Query("SELECT jc FROM JobCandidate jc WHERE jc.candidate.id = :candidateId AND jc.job.id = :jobId")
+    JobCandidate getJobCandidateByJobAndCandidate(@Param("candidateId") Long candidateId, @Param("jobId") Long jobId);
     
-    @Query("SELECT jc FROM JobCandidate jc WHERE jc.account.id = :accountId AND jc.applied = true")
-    List<JobCandidate> getAppliedJobs(@Param("accountId") Long accountId);
+    @Query("SELECT jc FROM JobCandidate jc WHERE jc.candidate.id = :candidateId AND jc.applied = true")
+    List<JobCandidate> getAppliedJobs(@Param("candidateId") Long candidateId);
     
-    @Query("SELECT jc FROM JobCandidate jc WHERE jc.account.id = :accountId AND jc.saved = true")
-    List<JobCandidate> getSavedJobs(@Param("accountId") Long accountId);
+    @Query("SELECT jc FROM JobCandidate jc WHERE jc.candidate.id = :candidateId AND jc.saved = true")
+    List<JobCandidate> getSavedJobs(@Param("candidateId") Long candidateId);
     
 }

@@ -4,23 +4,17 @@
  */
 package com.ttn.jobapp.Services;
 
-import com.ttn.jobapp.Pojo.Employee;
+import com.ttn.jobapp.Pojo.TemporaryRecruiter;
 import java.util.List;
 
-/*
+/**
  *
  * @author Win11
  */
-
-
-public interface EmployeeService {
+public interface TemporaryRecruiterService {
+    TemporaryRecruiter save(TemporaryRecruiter tempRecruiter);
     
-    Employee save(Employee employee);
-    
-    List<Employee> getEmployees();
+    List<TemporaryRecruiter> getTempRecruiter();
     
     void delete(Long id);
-    
-    Employee getEmployeeById(Long id);
-    
 }

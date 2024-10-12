@@ -56,7 +56,7 @@ public class JWTGenerator {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey)  // Sử dụng secretKey ở đây
+            Jwts.parser().setSigningKey(secretKey)
                     .parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException | MalformedJwtException | UnsupportedJwtException | SignatureException | IllegalArgumentException ex) {

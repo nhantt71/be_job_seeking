@@ -36,9 +36,9 @@ public class Job {
     private Boolean enable = false;
     
     @ManyToOne
-    @JoinColumn(name = "account_id", nullable = false)
+    @JoinColumn(name = "recruiter_id", nullable = false)
     @JsonIgnore
-    private Account account;
+    private Recruiter recruiter;
     
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)

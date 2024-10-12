@@ -4,15 +4,13 @@
  */
 package com.ttn.jobapp.Repositories;
 
-import com.ttn.jobapp.Pojo.Employer;
+import com.ttn.jobapp.Pojo.CompanyCandidate;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author Win11
  */
-@Repository
-@Transactional
-public interface EmployerRepository extends JpaRepository<Employer, Long>{}
+public interface CompanyCandidateRepository extends JpaRepository<CompanyCandidate, Long>{
+    
+}

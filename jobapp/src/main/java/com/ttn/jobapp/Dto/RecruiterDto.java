@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EmployerDto {
+public class RecruiterDto {
 
     @NotEmpty(message = "City is required")
     private String city;
