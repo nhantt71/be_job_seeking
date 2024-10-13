@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -44,6 +45,9 @@ public class AccountController {
     
     @Autowired
     private CloudinaryUtils cloudinaryUtils;
+    
+    
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     public String account(Model model) {
@@ -77,7 +81,7 @@ public class AccountController {
 
         Account account = new Account();
         account.setEmail(accountDto.getEmail());
-        account.setPassword(accountDto.getPassword());
+        account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
         account.setRole(accountDto.getRole());
 
         Map res = this.cloudinary.uploader().upload(accountDto.getImageFile().getBytes(), ObjectUtils.asMap("resource_type", "auto"));
