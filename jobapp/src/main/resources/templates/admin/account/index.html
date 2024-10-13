@@ -49,7 +49,6 @@
                                         <th>ID</th>
                                         <th>Email</th>
                                         <th>Avatar</th>
-                                        <th>Available</th>
                                         <th>Role</th>
                                         <th>Action</th>
                                     </tr>
@@ -61,7 +60,6 @@
                                         <td>
                                             <img th:src="@{${account.avatar}}" alt="Avatar" width="50" height="50"/>
                                         </td>
-                                        <td th:text="${account.available ? 'Yes' : 'No'}"></td>
                                         <td th:text="${account.role}"></td>
                                         <td>
                                             <div style="display: flex; gap: 10px;">
