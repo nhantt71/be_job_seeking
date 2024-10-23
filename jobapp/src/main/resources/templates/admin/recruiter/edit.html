@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{admin/fragments/head::head}"></head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+
+            <div th:replace="~{admin/fragments/header::header}"></div>
+
+            <!-- =============================================== -->
+
+            <!-- Left side column. contains the sidebar -->
+            <div th:replace="~{admin/fragments/sidebar::sidebar}"></div>
+
+            <!-- =============================================== -->
+
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        Recruiter Management Page
+                        <small>it all starts here</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li><a href="/admin/recruiter">Recruiter Management</a></li>
+                        <li><a href="">Edit Recruiter</a></li>
+                    </ol>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Edit Recruiter</h3>
+                        </div>
+                        <div class="box-body">
+                            <form th:action="@{/admin/recruiter/edit}" th:object="${recruiterDto}" method="post">
+                                <div class="form-group">
+                                    <label>ID:</label>
+                                    <input readonly type="text" th:value="${recruiter.id}" name="id" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Account ID:</label>
+                                    <input readonly type="text" th:value="${recruiter.account != null ? recruiter.account.id : 'No Account'}" name="accountId" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Company ID:</label>
+                                    <input type="text" th:value="${recruiter.company != null ? recruiter.company.id : 'No Company'}" class="form-control" readonly />
+                                    <input type="hidden" th:field="*{companyId}" th:value="${recruiter.company != null ? recruiter.company.id : null}" />
+                                </div>
+
+                                <form th:action="@{/admin/recruiter/edit}" th:object="${recruiterDto}" method="post">
+                                    <div class="form-group">
+                                        <label>Full name:</label>
+                                        <input type="text" th:field="*{fullname}" class="form-control" />
+                                        <p th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}" class="text-danger"></p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Phone number:</label>
+                                        <input type="text" th:field="*{phoneNumber}" class="form-control" />
+                                        <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger"></p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Province:</label>
+                                        <input type="text" th:field="*{province}" class="form-control" />
+                                        <p th:if="${#fields.hasErrors('province')}" th:errors="*{province}" class="text-danger"></p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>City:</label>
+                                        <input type="text" th:field="*{city}" class="form-control" />
+                                        <p th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class="text-danger"></p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Gender:</label>
+                                        <select th:field="*{gender}" class="form-control">
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <p th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger"></p>
+                                    </div>
+
+                                    <div class="row">
+                                        <button type="submit" class="btn btn-success">Edit</button>
+                                        <a class="btn btn-outline-primary" href="/admin/recruiter" role="button">Cancel</a>
+                                    </div>
+                                </form>
+
+                            </form>
+                            <div th:if="${errorMessages != null}" class="alert alert-danger">
+                                <ul>
+                                    <li th:each="error : ${errorMessages}" th:text="${error.defaultMessage}"></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- /.content -->
+            </div>
+            <!-- /.content-wrapper -->
+
+            <div th:replace="~{admin/fragments/footer::footer}"></div>
+
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 3 -->
+        <div th:replace="~{admin/fragments/script::script}"></div>
+
+    </body>
+</html>

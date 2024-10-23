@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -22,7 +23,6 @@ public class CompanyDto {
     @NotEmpty(message = "Name is required")
     private String name;
 
-    @Email(message = "Email should be valid")
     @NotEmpty(message = "Email is required")
     private String email;
 
@@ -38,7 +38,7 @@ public class CompanyDto {
 
     private List<JobDto> jobs;
     
-    private Long employerId;
+    private Long recruiterId;
     
     private int jobAmount;
     
@@ -47,5 +47,13 @@ public class CompanyDto {
     private String city;
     
     private String province;
+    
+    private Long addressId;
+    
+    private Long createdRecruiterId;
+    
+    private Boolean verified;
+    
+    private MultipartFile imageFile;
     
 }

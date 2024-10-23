@@ -5,7 +5,6 @@
 package com.ttn.jobapp.Dto;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,9 +22,16 @@ public class CandidateDto {
     @NotEmpty(message = "Phone number is required")
     private String phoneNumber;
     
-    @NotNull(message = "Account is required")
     private Long accountId;
     
     private Boolean available;
+    
+    private AccountDto accountDto;
+    
+    private String fileCV;
+    
+    private Long id;
+    
+    private String email;
 
 }

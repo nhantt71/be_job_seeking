@@ -5,6 +5,7 @@
 package com.ttn.jobapp.Dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -12,8 +13,20 @@ import lombok.Data;
  */
 @Data
 public class CategoryDto {
+    
     private Long id;
+    
     private String name;
+    
     private String icon;
+    
+    private String phoneNumber;
+    
+    private String accountId;
+    
     private int jobs;
+    
+    private MultipartFile imageFile;
+    
+
 }

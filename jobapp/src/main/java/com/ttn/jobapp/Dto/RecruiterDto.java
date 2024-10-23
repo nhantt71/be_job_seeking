@@ -23,10 +23,11 @@ public class RecruiterDto {
     @NotNull(message = "Account ID cannot be null")
     private Long accountId;
 
-    @NotNull(message = "Company ID cannot be null")
     private Long companyId;
     
     private String fullname;
     
     private String phoneNumber;
+    
+    private Long id;
 }

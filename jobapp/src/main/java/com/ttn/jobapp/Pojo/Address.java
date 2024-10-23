@@ -26,7 +26,7 @@ public class Address {
     private String city;
     private String province;
     
-    @OneToOne(mappedBy = "address", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "address")
     @JsonIgnore
     private Company company;
 }

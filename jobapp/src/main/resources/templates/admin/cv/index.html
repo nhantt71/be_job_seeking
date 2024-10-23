@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="admin/fragments/head::head"></head> 
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+
+            <div th:replace="admin/fragments/header::header"></div>
+
+            <!-- =============================================== -->
+
+            <!-- Left side column. contains the sidebar -->
+
+            <div th:replace="admin/fragments/sidebar::sidebar"></div>
+
+            <!-- =============================================== -->
+
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        CV Management Page
+                        <small>it all starts here</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li><a href="">CV Management</a></li>
+                    </ol>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">List of CVs</h3>
+
+                            <a href="/admin/cv/create" class="btn btn-success">Create CV</a>
+                        </div>
+                        <div class="box-body">
+
+    
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>File CV</th>
+                                        <th>Main CV</th>
+                                        <th>Updated Date</th>
+                                        <th>Candidate ID</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="cv : ${cvs}">
+                                        <td th:text="${cv.id}"></td>
+                                        <td th:text="${cv.name}"></td>
+                                        <td>
+                                            <img th:src="@{${cv.fileCV}}" alt="FileCV" width="50" height="50"/>
+                                        </td>
+                                        <td th:text="${cv.mainCV}"></td>
+                                        <td th:text="${cv.updatedDate}"></td>
+                                        <td th:text="${cv.candidate.id}"></td>
+                                        <td>
+                                            <div style="display: flex; gap: 10px;">
+                                                <a th:href="@{/admin/cv/edit(id=${cv.id})}" class="btn btn-primary">Edit</a>
+                                                <a class="btn btn-danger btn-sm" th:href="@{/admin/cv/delete(id=${cv.id})}" 
+                                                   onclick="return confirm('Are you sure?')">Delete</a>
+                                            </div>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <!-- /.content -->
+            </div>
+            <!-- /.content-wrapper -->
+
+            <div th:replace="admin/fragments/footer::footer"></div>
+
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 3 -->
+
+        <div th:replace="admin/fragments/script::script"></div>
+
+    </body>
+</html>

@@ -4,6 +4,7 @@
  */
 package com.ttn.jobapp.Services;
 
+import com.ttn.jobapp.Dto.CandidateDto;
 import com.ttn.jobapp.Pojo.Candidate;
 import java.util.List;
 
@@ -24,5 +25,11 @@ public interface CandidateService {
     Candidate getCandidateById(Long id);
     
     Candidate getCandidateByEmail(String email);
+    
+    List<Candidate> getUnattachCandidates();
+    
+    List<Candidate> getCandidatesWithoutCompany();
+    
+    List<Candidate> getCandidatesByIds(List<Long> candidateIds);
     
 }

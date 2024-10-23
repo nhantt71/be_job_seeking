@@ -174,8 +174,21 @@ public class ApiRecruiterController {
     }
     
     @GetMapping("/get-recruiter-by-email")
-    public ResponseEntity<Recruiter> getRecruiterByEmail(@RequestParam("email") String email){
-        return new ResponseEntity<>(this.rs.getRecruiterByEmail(email), HttpStatus.OK);
+    public ResponseEntity<RecruiterDto> getRecruiterByEmail(@RequestParam("email") String email){
+        Recruiter recruiter = this.rs.getRecruiterByEmail(email);
+        RecruiterDto recruiterDto = new RecruiterDto();
+        
+        recruiterDto.setId(recruiter.getId());
+        recruiterDto.setCity(recruiter.getCity());
+        recruiterDto.setProvince(recruiter.getProvince());
+        recruiterDto.setFullname(recruiter.getFullname());
+        recruiterDto.setPhoneNumber(recruiter.getPhoneNumber());
+        recruiterDto.setGender(recruiter.getGender());
+        recruiterDto.setCompanyId(recruiter.getCompany().getId());
+        recruiterDto.setAccountId(recruiter.getAccount().getId());
+        
+        return new ResponseEntity<>(recruiterDto, HttpStatus.OK);
     }
+    
 
 }

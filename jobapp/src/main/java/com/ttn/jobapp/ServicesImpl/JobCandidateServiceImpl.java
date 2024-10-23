@@ -55,5 +55,6 @@ public class JobCandidateServiceImpl implements JobCandidateService{
     public List<JobCandidate> getSavedJobs(Long candidateId) {
         return this.jcr.getSavedJobs(candidateId);
     }
+
     
 }

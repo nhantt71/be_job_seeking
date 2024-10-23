@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="admin/fragments/head :: head">
+        <!-- Không cần đặt các script ở đây -->
+    </head>
+    <body class="hold-transition skin-blue sidebar-mini">
+        <div class="wrapper">
+            <div th:replace="admin/fragments/header :: header"></div>
+            <div th:replace="admin/fragments/sidebar :: sidebar"></div>
+            <style>
+                #jobStatisticsChart, #applicationStatisticsChart {
+                    max-width: 600px;
+                    max-height: 300px;
+                }
+
+                .chart-and-table {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                }
+
+                .stats-table {
+                    margin-left: 20px;
+                    border-collapse: collapse;
+                    width: 40%;
+                }
+
+                .stats-table th, .stats-table td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                }
+
+                .stats-table th {
+                    background-color: #f2f2f2;
+                    text-align: left;
+                }
+            </style>
+
+            <div class="content-wrapper">
+                <section class="content-header">
+                    <h1>
+                        Statistics Page
+                        <small>Statistics Overview</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li><a href="/admin/statistics">Statistics</a></li>
+                    </ol>
+                </section>
+
+                <section class="content">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Job Postings Statistics</h3>
+                            <div class="box-tools">
+                                <form id="jobStatisticsForm">
+                                    <label for="yearSelect">Select Year:</label>
+                                    <select id="yearSelect" name="year">
+                                        <option value="2024">2024</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2022">2022</option>
+                                    </select>
+
+                                    <label for="periodTypeSelect">Select Period Type:</label>
+                                    <select id="periodTypeSelect" name="periodType">
+                                        <option value="MONTH">Month</option>
+                                        <option value="QUARTER">Quarter</option>
+                                    </select>
+
+                                    <button type="submit">Generate Report</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="chart-and-table">
+                            <canvas id="jobStatisticsChart"></canvas>
+                            <!-- Bảng thống kê cho Job Postings -->
+                            <table class="stats-table" id="jobStatisticsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Period</th>
+                                        <th>Job Postings</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Job Applications Statistics</h3>
+                        </div>
+                        <div class="chart-and-table">
+                            <canvas id="applicationStatisticsChart"></canvas>
+                            <!-- Bảng thống kê cho Job Applications -->
+                            <table class="stats-table" id="applicationStatisticsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Period</th>
+                                        <th>Applications</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div th:replace="admin/fragments/footer :: footer"></div>
+        </div>
+
+        <!-- Di chuyển các đoạn script xuống cuối cùng -->
+        <div th:replace="admin/fragments/script :: script"></div>
+
+        <!-- Thêm các thư viện cần thiết ở cuối để đảm bảo chúng được tải đúng -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+
+        <!-- Bắt đầu đoạn mã jQuery và Chart.js -->
+        <script>
+            $(document).ready(function () {
+                let jobChart = null; // Khởi tạo các biến chứa biểu đồ
+                let applicationChart = null;
+
+                $('#jobStatisticsForm').on('submit', async function (event) {
+                    event.preventDefault(); // Ngăn chặn form gửi dữ liệu theo cách mặc định
+
+                    var year = $('#yearSelect').val();
+                    var periodType = $('#periodTypeSelect').val();
+
+                    console.log(`Calling API: /api/statistics/jobs?year=${year}&periodType=${periodType}`);
+
+                    try {
+                        const response = await $.get(`/api/statistics/jobs?year=${year}&periodType=${periodType}`);
+                        if (response.length > 0) {
+                            const labels = response.map(stat => periodType === 'MONTH' ? stat.period : 'Q' + stat.period);
+                            const jobCounts = response.map(stat => stat.count);
+
+                            // Cập nhật biểu đồ, kiểm tra xem biểu đồ đã tồn tại chưa
+                            const ctx = document.getElementById('jobStatisticsChart').getContext('2d');
+                            if (jobChart) {
+                                jobChart.data.labels = labels;
+                                jobChart.data.datasets[0].data = jobCounts;
+                                jobChart.update(); // Cập nhật biểu đồ hiện có
+                            } else {
+                                jobChart = new Chart(ctx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: labels,
+                                        datasets: [{
+                                                label: 'Job Postings',
+                                                data: jobCounts,
+                                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                                borderColor: 'rgba(75, 192, 192, 1)',
+                                                borderWidth: 1
+                                            }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+
+                            // Cập nhật bảng thống kê
+                            const jobTableBody = $('#jobStatisticsTable tbody');
+                            jobTableBody.empty(); // Xóa nội dung cũ
+                            response.forEach(stat => {
+                                jobTableBody.append(`<tr><td>${periodType === 'MONTH' ? stat.period : 'Q' + stat.period}</td><td>${stat.count}</td></tr>`);
+                            });
+                        } else {
+                            alert('No job statistics available for the selected period.');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching job statistics:', error);
+                        alert('Failed to fetch job statistics. Check console for details.');
+                    }
+                });
+
+                $('#jobStatisticsForm').on('submit', async function (event) {
+                    event.preventDefault(); // Ngăn chặn form gửi dữ liệu theo cách mặc định
+
+                    var year = $('#yearSelect').val();
+                    var periodType = $('#periodTypeSelect').val();
+
+                    console.log(`Calling API: /api/statistics/applications?year=${year}&periodType=${periodType}`);
+
+                    try {
+                        const response = await $.get(`/api/statistics/applications?year=${year}&periodType=${periodType}`);
+                        if (response.length > 0) {
+                            const labels = response.map(stat => periodType === 'MONTH' ? stat.period : 'Q' + stat.period);
+                            const applicationCounts = response.map(stat => stat.count);
+
+                            // Cập nhật biểu đồ, kiểm tra xem biểu đồ đã tồn tại chưa
+                            const ctx = document.getElementById('applicationStatisticsChart').getContext('2d');
+                            if (applicationChart) {
+                                applicationChart.data.labels = labels;
+                                applicationChart.data.datasets[0].data = applicationCounts;
+                                applicationChart.update(); // Cập nhật biểu đồ hiện có
+                            } else {
+                                applicationChart = new Chart(ctx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: labels,
+                                        datasets: [{
+                                                label: 'Applications',
+                                                data: applicationCounts,
+                                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                                borderColor: 'rgba(255, 99, 132, 1)',
+                                                borderWidth: 1
+                                            }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+
+                            // Cập nhật bảng thống kê
+                            const applicationTableBody = $('#applicationStatisticsTable tbody');
+                            applicationTableBody.empty(); // Xóa nội dung cũ
+                            response.forEach(stat => {
+                                applicationTableBody.append(`<tr><td>${periodType === 'MONTH' ? stat.period : 'Q' + stat.period}</td><td>${stat.count}</td></tr>`);
+                            });
+                        } else {
+                            alert('No application statistics available for the selected period.');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching application statistics:', error);
+                        alert('Failed to fetch application statistics. Check console for details.');
+                    }
+                });
+            });
+
+        </script>
+        <!-- Kết thúc đoạn mã jQuery và Chart.js -->
+    </body>
+</html>

@@ -4,6 +4,8 @@
  */
 package com.ttn.jobapp.Dto;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -13,7 +15,15 @@ import lombok.Data;
 @Data
 public class JobCandidateDto {
     
-    private Long accountId;
+    private Long candidateId;
     
     private Long jobId;
+    
+    private Boolean applied;
+    
+    private Boolean saved;
+    
+    private LocalDateTime savedAt;
+    
+    private LocalDate appliedAt;
 }

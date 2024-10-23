@@ -7,7 +7,6 @@ package com.ttn.jobapp.Services;
 import com.ttn.jobapp.Dto.JobDto;
 import com.ttn.jobapp.Pojo.Job;
 import java.util.List;
-import org.springframework.data.repository.query.Param;
 
 /**
  *
@@ -35,4 +34,5 @@ public interface JobService {
     
     List<JobDto> findCompanyJobsByKeyword(String keyword, Long companyId);
     
+
 }

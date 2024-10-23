@@ -5,6 +5,7 @@
 package com.ttn.jobapp.Repositories;
 
 import com.ttn.jobapp.Pojo.Candidate;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,5 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 public interface CandidateRepository extends JpaRepository<Candidate, Long>{
     @Query("SELECT c FROM Candidate c WHERE c.account.email LIKE :email")
     Candidate getCandidateByEmail(@Param("email") String email);
+    
+    @Query("SELECT c FROM Candidate c LEFT JOIN JobCandidate jc ON c.id = jc.candidate.id WHERE jc.candidate IS NULL")
+    List<Candidate> findUnattachedCandidates();
+    
+    @Query("SELECT c FROM Candidate c LEFT JOIN CompanyCandidate cc ON c.id = cc.candidate.id WHERE cc.candidate IS NULL")
+    List<Candidate> findCandidatesWithoutCompany();
 }
 

@@ -21,13 +21,13 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>
-                        Account Management Page
+                        Recruiter Management Page
                         <small>it all starts here</small>
                     </h1>
                     <ol class="breadcrumb">
                         <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
-                        <li><a href="/admin/employer">Employer Management</a></li>
-                        <li><a href="">Create Employer</a></li>
+                        <li><a href="/admin/recruiter">Recruiter Management</a></li>
+                        <li><a href="">Create Recruiter</a></li>
                     </ol>
                 </section>
 
@@ -35,10 +35,20 @@
                 <section class="content">
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">Create Employer</h3>
+                            <h3 class="box-title">Create Recruiter</h3>
                         </div>
                         <div class="box-body">
-                            <form th:action="@{/admin/employer/create}" enctype="multipart/form-data" th:object="${employerDto}" method="post">
+                            <form th:action="@{/admin/recruiter/create}" th:object="${recruiterDto}" method="post">
+                                <div class="form-group">
+                                    <label>Full name:</label>
+                                    <input type="text" th:field="*{fullname}" class="form-control" />
+                                    <p th:if="${#fields.hasErrors('fullname')}" th:errorclass="text-danger" th:errors="*{fullname}"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone number:</label>
+                                    <input type="text" th:field="*{phoneNumber}" class="form-control" />
+                                    <p th:if="${#fields.hasErrors('phoneNumber')}" th:errorclass="text-danger" th:errors="*{phoneNumber}"></p>
+                                </div>
                                 <div class="form-group">
                                     <label>Province:</label>
                                     <input type="text" th:field="*{province}" class="form-control" />
@@ -59,30 +69,36 @@
                                     <p th:if="${#fields.hasErrors('gender')}" th:errorclass="text-danger" th:errors="*{gender}"></p>
                                 </div>
                                 <div class="form-group">
-                                    <label>Company:</label>
-                                    <select th:field="*{companyId}" class="form-control">
-                                        <option value="" disabled selected>Select a company</option>
-                                        <option th:each="company : ${companies}"
-                                                th:value="${company.id}"
-                                                th:text="${company.name}">
-                                        </option>
+                                    <label for="companyId">Select Company</label>
+                                    <select th:field="*{companyId}" class="form-control" id="companyId">
+                                        <option value="">-- Select Company --</option>
+                                        <option th:each="company : ${companies}" th:value="${company.id}" th:text="${company.name}"></option>
                                     </select>
-                                    <p th:if="${#fields.hasErrors('companyId')}" th:errorclass="text-danger" th:errors="*{companyId}"></p>
+                                    <p class="text-danger" th:if="${#fields.hasErrors('companyId')}" th:errors="*{companyId}"></p>
                                 </div>
+
+                                <!-- Button to create a new account -->
                                 <div class="form-group">
-                                    <label>Account:</label>
-                                    <select th:field="*{accountId}" class="form-control">
-                                        <option value="" disabled selected>Select a company</option>
-                                        <option th:each="account : ${accounts}"
-                                                th:value="${account.id}"
-                                                th:text="${account.email}">
-                                        </option>
-                                    </select>
-                                    <p th:if="${#fields.hasErrors('accountId')}" th:errorclass="text-danger" th:errors="*{accountId}"></p>
+                                    <a href="/admin/account/create" class="btn btn-primary">Create New Account</a>
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="accountId">Select Account</label>
+                                    <select th:field="*{accountId}" class="form-control" id="accountId">
+                                        <option value="">-- Select Account --</option>
+                                        <option th:each="account : ${accounts}" th:value="${account.id}" th:text="${account.email}"></option>
+                                    </select>
+                                    <p class="text-danger" th:if="${#fields.hasErrors('accountId')}" th:errors="*{accountId}"></p>
+                                </div>
+
+                                <!-- Button to create a new account -->
+                                <div class="form-group">
+                                    <a href="/admin/account/create" class="btn btn-primary">Create New Account</a>
+                                </div>
+
                                 <div class="row">
                                     <button type="submit" class="btn btn-success">Create</button>
-                                    <a class="btn btn-outline-primary" href="/admin/employer" role="button">Cancel</a>
+                                    <a class="btn btn-outline-primary" href="/admin/recruiter" role="button">Cancel</a>
                                 </div>
                             </form>
                         </div>

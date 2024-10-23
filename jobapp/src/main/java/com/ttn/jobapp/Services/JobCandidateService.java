@@ -12,6 +12,7 @@ import java.util.List;
  * @author MyLaptop
  */
 public interface JobCandidateService {
+    
     JobCandidate save(JobCandidate jobCandidate);
 
     List<JobCandidate> getJobCandidates();
@@ -25,5 +26,6 @@ public interface JobCandidateService {
     List<JobCandidate> getAppliedJobs(Long candidateId);
     
     List<JobCandidate> getSavedJobs(Long candidateId);
+    
     
 }

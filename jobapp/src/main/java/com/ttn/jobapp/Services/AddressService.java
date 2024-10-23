@@ -18,4 +18,6 @@ public interface AddressService {
     List<Address> getAddress();
 
     void delete(Long id);
+    
+    List<Address> getAddressNotAttach();
 }

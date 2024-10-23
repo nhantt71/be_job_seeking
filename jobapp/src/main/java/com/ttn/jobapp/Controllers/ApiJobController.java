@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -149,6 +148,17 @@ public class ApiJobController {
     @GetMapping("/get-job-by-company-id/{id}")
     public ResponseEntity<List<JobDto>> getJobByCompanyId(@PathVariable("id") Long id) {
         return new ResponseEntity<>(this.js.getJobByCompany(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-published-jobs-by-company-id/{id}")
+    public ResponseEntity<List<JobDto>> getPublishedJobsByCompanyId(@PathVariable("id") Long id) {
+        List<JobDto> jobs = this.js.getJobByCompany(id);
+
+        List<JobDto> publishedJobs = jobs.stream()
+                .filter(JobDto::getEnable)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(publishedJobs, HttpStatus.OK);
     }
 
     @GetMapping("/get-saved-job-by-candidate-id/{id}")
@@ -315,7 +325,7 @@ public class ApiJobController {
             job.setExperience(experience);
             job.setName(name);
             job.setSalary(salary);
-            job.setEnable(Boolean.FALSE);
+            job.setEnable(Boolean.TRUE);
 
             this.js.save(job);
 
@@ -394,6 +404,20 @@ public class ApiJobController {
         this.js.save(job);
 
         return new ResponseEntity<>("Published job successfully!", HttpStatus.OK);
+    }
+    
+    @PostMapping("/unpublish/{jobId}")
+    public ResponseEntity<String> unpublishJob(@PathVariable("jobId") Long jobId) {
+        Job job = js.getJobById(jobId);
+
+        if (job == null) {
+            return new ResponseEntity<>("Job not found!", HttpStatus.NOT_FOUND);
+        }
+
+        job.setEnable(Boolean.FALSE);
+        this.js.save(job);
+
+        return new ResponseEntity<>("Unpublished job successfully!", HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{jobId}")
@@ -501,4 +525,51 @@ public class ApiJobController {
 
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
+
+    @PostMapping("/edit/{jobId}")
+    public ResponseEntity<?> editJob(@PathVariable("jobId") Long jobId,
+            @RequestParam Map<String, String> params) {
+
+        Job job = this.js.getJobById(jobId);
+        if (job == null) {
+            return new ResponseEntity<>("Job not found", HttpStatus.NOT_FOUND);
+        }
+
+        Category cate = this.cateS.getCateById(Long.valueOf(params.get("categoryId")));
+        if (cate == null) {
+            return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            job.setDetail(params.get("detail"));
+            job.setEndDate(LocalDate.parse(params.get("endDate")));
+            job.setExperience(params.get("experience"));
+            job.setName(params.get("name"));
+            job.setSalary(params.get("salary"));
+            job.setCategory(cate);
+
+            Job savedJob = this.js.save(job);
+
+            JobDto jDto = new JobDto();
+            jDto.setId(savedJob.getId());
+            jDto.setName(savedJob.getName());
+            jDto.setCreatedDate(savedJob.getCreatedDate());
+            jDto.setEndDate(savedJob.getEndDate());
+            jDto.setCategoryId(savedJob.getCategory().getId());
+            jDto.setDetail(savedJob.getDetail());
+            jDto.setExperience(savedJob.getExperience());
+            jDto.setEnable(savedJob.getEnable());
+            jDto.setSalary(savedJob.getSalary());
+
+            return new ResponseEntity<>(jDto, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error updating job", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @GetMapping("/get-job-by-id/{id}")
+    public ResponseEntity<Job> getJobById(@PathVariable("id") Long id){
+        return new ResponseEntity<>(this.js.getJobById(id), HttpStatus.OK);
+    }
+
 }
