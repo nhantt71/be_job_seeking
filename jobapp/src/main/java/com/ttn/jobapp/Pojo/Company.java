@@ -46,8 +46,8 @@ public class Company {
     @JoinColumn(name = "created_recruiter_id", nullable = true)
     private Recruiter recruiter;
     
-    @OneToOne
-    @JoinColumn(name = "address_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", nullable = true)
     private Address address;
     
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)

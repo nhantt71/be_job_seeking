@@ -4,8 +4,6 @@
  */
 package com.ttn.jobapp.Dto;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +15,6 @@ public class JobDto {
     
     private Long id;
 
-    @NotEmpty(message = "Salary is required")
     private String salary;
 
     private String experience;
@@ -26,10 +23,8 @@ public class JobDto {
 
     private String detail;
 
-    @NotNull(message = "Created date is required")
     private LocalDate createdDate;
 
-    @NotNull(message = "End date is required")
     private LocalDate endDate;
     
     private String companyName;
@@ -38,13 +33,14 @@ public class JobDto {
     
     private String address;
     
-    private Boolean enable = false;
+    private Boolean enable;
     
-    @NotNull(message = "Company ID cannot be null")
     private Long companyId;
     
     private Long categoryId;
     
     private String categoryName;
+    
+    private Long recruiterId;
     
 }

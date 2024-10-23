@@ -50,5 +50,10 @@ public class CompanyServiceImpl implements CompanyService{
     public List<Company> getFindingCompanies(String keyword) {
         return this.cr.getFindingCompanies(keyword);
     }
+
+    @Override
+    public List<Company> getUnverifiedCompanies() {
+        return cr.findUnverifiedCompaniesWithoutToken();
+    }
     
 }

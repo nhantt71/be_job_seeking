@@ -3,10 +3,10 @@ package com.ttn.jobapp.Pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
+import lombok.Data;
 
 @Entity
-@lombok.Getter
-@lombok.Setter
+@Data
 @Table(name = "candidate")
 public class Candidate {
 

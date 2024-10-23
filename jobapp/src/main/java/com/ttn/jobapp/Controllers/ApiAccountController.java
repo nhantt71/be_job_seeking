@@ -132,7 +132,11 @@ public class ApiAccountController {
     }
 
     @GetMapping(path = "/current-user")
-    public ResponseEntity<User> getCurrentUser() {
+    public ResponseEntity<?> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
         return new ResponseEntity<>(as.getCurrentUser(), HttpStatus.OK);
     }
 
@@ -140,7 +144,6 @@ public class ApiAccountController {
     public ResponseEntity<Account> getAccountByEmail(@RequestParam("email") String email) {
         return new ResponseEntity<>(as.getAccountByEmail(email), HttpStatus.OK);
     }
-
 
     @PostMapping("/change-password")
     public ResponseEntity<Account> changePassword(@RequestParam("accountId") Long accountId,
@@ -156,12 +159,12 @@ public class ApiAccountController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-    
+
     @PostMapping("/change-avatar")
     public ResponseEntity<Account> changeAvatar(@RequestParam("accountId") Long accountId,
-            @RequestPart MultipartFile file){
+            @RequestPart MultipartFile file) {
         Account account = this.as.getAccountById(accountId);
-        
+
         if (file.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

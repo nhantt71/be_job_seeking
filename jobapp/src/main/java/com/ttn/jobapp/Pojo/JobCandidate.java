@@ -5,6 +5,7 @@
 package com.ttn.jobapp.Pojo;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Data;
 
@@ -37,7 +38,10 @@ public class JobCandidate {
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean applied = false;
 
-    @Column(name = "saved_at", nullable = false)
+    @Column(name = "saved_at")
     private LocalDateTime savedAt;
+    
+    @Column(name = "applied_at")
+    private LocalDate appliedAt;
 
 }

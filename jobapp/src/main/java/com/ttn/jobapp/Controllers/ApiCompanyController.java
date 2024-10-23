@@ -12,6 +12,7 @@ import com.ttn.jobapp.Pojo.Company;
 import com.ttn.jobapp.Pojo.Recruiter;
 import com.ttn.jobapp.Pojo.VerificationToken;
 import com.ttn.jobapp.Repositories.VerificationTokenRepository;
+import com.ttn.jobapp.Services.AddressService;
 import com.ttn.jobapp.Services.CompanyService;
 import com.ttn.jobapp.Services.RecruiterService;
 import jakarta.mail.MessagingException;
@@ -58,6 +59,9 @@ public class ApiCompanyController {
 
     @Autowired
     private RecruiterService rs;
+
+    @Autowired
+    private AddressService as;
 
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
@@ -107,6 +111,7 @@ public class ApiCompanyController {
         comDto.setAddressDetail(com.getAddress().getDetail());
         comDto.setCity(com.getAddress().getCity());
         comDto.setProvince(com.getAddress().getProvince());
+        comDto.setCreatedRecruiterId(com.getRecruiter().getId());
 
         return new ResponseEntity<>(comDto, HttpStatus.OK);
     }
@@ -247,5 +252,85 @@ public class ApiCompanyController {
         verificationTokenRepository.delete(verificationToken);
 
         return new ResponseEntity<>("Company successfully verified!", HttpStatus.OK);
+    }
+
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<CompanyDto> editCompany(@RequestParam Map<String, String> params,
+            @PathVariable("id") Long id) {
+
+        Company com = this.cs.getCompanyById(id);
+        if (com == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (params.get("name") != null) {
+            com.setName(params.get("name"));
+        }
+        if (params.get("email") != null) {
+            com.setEmail(params.get("email"));
+        }
+        if (params.get("information") != null) {
+            com.setInformation(params.get("information"));
+        }
+        if (params.get("phoneNumber") != null) {
+            com.setPhoneNumber(params.get("phoneNumber"));
+        }
+        if (params.get("website") != null) {
+            com.setWebsite(params.get("website"));
+        }
+
+        Address address = com.getAddress();
+        if (address != null) {
+            if (params.get("city") != null) {
+                address.setCity(params.get("city"));
+            }
+            if (params.get("detail") != null) {
+                address.setDetail(params.get("detail"));
+            }
+            if (params.get("province") != null) {
+                address.setProvince(params.get("province"));
+            }
+        }
+
+        Company savedCompany = cs.save(com);
+
+        CompanyDto comDto = new CompanyDto();
+        comDto.setId(savedCompany.getId());
+        comDto.setEmail(savedCompany.getEmail());
+        comDto.setInformation(savedCompany.getInformation());
+        comDto.setLogo(savedCompany.getLogo());
+        comDto.setName(savedCompany.getName());
+        comDto.setPhoneNumber(savedCompany.getPhoneNumber());
+        comDto.setWebsite(savedCompany.getWebsite());
+
+        if (savedCompany.getAddress() != null) {
+            comDto.setAddressDetail(savedCompany.getAddress().getDetail());
+            comDto.setCity(savedCompany.getAddress().getCity());
+            comDto.setProvince(savedCompany.getAddress().getProvince());
+        }
+
+        if (savedCompany.getRecruiter() != null) {
+            comDto.setCreatedRecruiterId(savedCompany.getRecruiter().getId());
+        }
+
+        return new ResponseEntity<>(comDto, HttpStatus.OK);
+    }
+
+    @PostMapping("/change-logo")
+    public ResponseEntity<Company> changeLogo(@RequestParam("id") Long id,
+            @RequestPart MultipartFile file) {
+        Company company = this.cs.getCompanyById(id);
+
+        if (file.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            Map<?, ?> res = this.cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+            company.setLogo(res.get("secure_url").toString());
+            return new ResponseEntity<>(this.cs.save(company), HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -4,10 +4,12 @@
  */
 package com.ttn.jobapp.ServicesImpl;
 
+import com.ttn.jobapp.Dto.CandidateDto;
 import com.ttn.jobapp.Pojo.Candidate;
 import com.ttn.jobapp.Repositories.CandidateRepository;
 import com.ttn.jobapp.Services.CandidateService;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +18,8 @@ import org.springframework.stereotype.Service;
  * @author Win11
  */
 @Service
-public class CandidateServiceImpl implements CandidateService{
-    
+public class CandidateServiceImpl implements CandidateService {
+
     @Autowired
     private CandidateRepository cr;
 
@@ -44,6 +46,21 @@ public class CandidateServiceImpl implements CandidateService{
     @Override
     public Candidate getCandidateByEmail(String email) {
         return cr.getCandidateByEmail(email);
+    }
+
+    @Override
+    public List<Candidate> getUnattachCandidates() {
+        return cr.findUnattachedCandidates();
+    }
+
+    @Override
+    public List<Candidate> getCandidatesWithoutCompany() {
+        return cr.findCandidatesWithoutCompany();
+    }
+
+    @Override
+    public List<Candidate> getCandidatesByIds(List<Long> candidateIds) {
+        return cr.findAllById(candidateIds);
     }
 
 }

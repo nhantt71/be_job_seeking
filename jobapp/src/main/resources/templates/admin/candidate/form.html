@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="admin/fragments/head::head"></head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+
+        <div th:replace="admin/fragments/header::header"></div>
+
+        <!-- =============================================== -->
+
+        <!-- Left side column. contains the sidebar -->
+        <div th:replace="admin/fragments/sidebar::sidebar"></div>
+
+        <!-- =============================================== -->
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    Candidate Management Page
+                    <small>it all starts here</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
+                    <li><a href="/admin/candidate">Candidate Management</a></li>
+                    <li><a href="">Create Candidate</a></li>
+                </ol>
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">Create Candidate</h3>
+                    </div>
+                    <div class="box-body">
+                        <form th:action="@{/admin/candidate/create}" th:object="${candidateDto}" method="post">
+                            <div class="form-group">
+                                <label for="fullname">Full Name</label>
+                                <input type="text" th:field="*{fullname}" class="form-control" id="fullname" placeholder="Enter fullname">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phoneNumber">Phone number</label>
+                                <input type="text" th:field="*{phoneNumber}" class="form-control" id="phoneNumber" placeholder="Enter phone number">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="available">Available</label>
+                                <select th:field="*{available}" class="form-control" id="available">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="accountId">Select Account</label>
+                                <select th:field="*{accountId}" class="form-control" id="accountId">
+                                    <option value="">-- Select Account --</option>
+                                    <option th:each="account : ${accounts}" th:value="${account.id}" th:text="${account.email}"></option>
+                                </select>
+                                <p class="text-danger" th:if="${#fields.hasErrors('accountId')}" th:errors="*{accountId}"></p>
+                            </div>
+
+                            <!-- Button to create a new account -->
+                            <div class="form-group">
+                                <a href="/admin/account/create" class="btn btn-primary">Create New Account</a>
+                            </div>
+
+                            <!-- Submit and Cancel Buttons -->
+                            <div class="row">
+                                <button type="submit" class="btn btn-success">Create</button>
+                                <a class="btn btn-outline-primary" href="/admin/candidate" role="button">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        <div th:replace="admin/fragments/footer::footer"></div>
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery 3 -->
+    <div th:replace="admin/fragments/script::script"></div>
+
+</body>
+
+</html>

@@ -6,7 +6,6 @@ package com.ttn.jobapp.Dto;
 
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -22,7 +21,6 @@ public class AddressDto {
     @NotEmpty(message = "Province is required")
     private String province;
 
-    @NotNull(message = "Company is required")
     private Long companyId;
     
 }

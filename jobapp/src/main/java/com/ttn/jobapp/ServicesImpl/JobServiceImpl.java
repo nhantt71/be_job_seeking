@@ -5,6 +5,7 @@
 package com.ttn.jobapp.ServicesImpl;
 
 import com.ttn.jobapp.Dto.JobDto;
+import com.ttn.jobapp.Pojo.Company;
 import com.ttn.jobapp.Pojo.Job;
 import com.ttn.jobapp.Repositories.JobRepository;
 import com.ttn.jobapp.Services.JobService;
@@ -96,19 +97,23 @@ public class JobServiceImpl implements JobService {
                     JobDto jDto = new JobDto();
                     jDto.setId(x.getId());
                     jDto.setDetail(x.getDetail());
-                    jDto.setAddress(x.getCompany().getAddress().getProvince());
-                    jDto.setCompanyLogo(x.getCompany().getLogo());
+
+                    Company company = x.getCompany();
+                    jDto.setAddress(company.getAddress().getProvince());
+                    jDto.setCompanyLogo(company.getLogo());
+                    jDto.setCompanyId(company.getId());
+                    jDto.setCompanyName(company.getName());
+
                     jDto.setName(x.getName());
-                    jDto.setCompanyId(x.getCompany().getId());
-                    jDto.setCompanyName(x.getCompany().getName());
+                    jDto.setEnable(x.getEnable());
                     jDto.setSalary(x.getSalary());
                     jDto.setCategoryId(x.getCategory().getId());
                     jDto.setCreatedDate(x.getCreatedDate());
                     jDto.setEndDate(x.getEndDate());
                     jDto.setExperience(x.getExperience());
+
                     return jDto;
                 }).collect(Collectors.toList());
-
     }
 
     @Override
@@ -198,7 +203,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<JobDto> findCompanyJobsByKeyword(String keyword, Long companyId) {
         List<Job> jobs = this.jr.findCompanyJobsByKeyword(keyword, companyId);
-        
+
         List<JobDto> jDto = jobs.stream()
                 .distinct()
                 .map(x -> {
@@ -217,7 +222,7 @@ public class JobServiceImpl implements JobService {
                     jobDto.setExperience(x.getExperience());
                     return jobDto;
                 }).collect(Collectors.toList());
-        
+
         return jDto;
     }
 

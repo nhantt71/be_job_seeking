@@ -43,7 +43,7 @@ public class Recruiter {
         }
     }
     
-    @OneToOne(mappedBy = "recruiter", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "recruiter")
     @JsonIgnore
     private Company companyCreater;
 

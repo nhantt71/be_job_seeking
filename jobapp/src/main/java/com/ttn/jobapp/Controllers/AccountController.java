@@ -46,7 +46,7 @@ public class AccountController {
     @Autowired
     private CloudinaryUtils cloudinaryUtils;
     
-    
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @GetMapping

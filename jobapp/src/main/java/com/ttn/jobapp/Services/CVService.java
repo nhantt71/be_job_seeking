@@ -23,4 +23,6 @@ public interface CVService {
     List<CV> getCVsByCandidateId(Long id);
     
     CV getCVById(Long id);
+    
+    String getMainCVByCandidateId(Long id);
 }

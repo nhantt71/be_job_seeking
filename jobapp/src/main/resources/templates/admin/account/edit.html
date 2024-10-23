@@ -67,8 +67,9 @@
                                     <label>Role:</label>
                                     <select th:field="*{role}" class="form-control">
                                         <option value="admin">Admin</option>
-                                        <option value="employee">Employee</option>
-                                        <option value="employer">Employer</option>
+                                        <option value="recruiter">Recruiter</option>
+                                        <option value="candidate">Candidate</option>
+                                        <option value="super recruiter">Super Recruiter</option>
                                     </select>
                                     <p th:if="${#fields.hasErrors('role')}" th:errorclass="text-danger" th:errors="*{role}"></p>
                                 </div>

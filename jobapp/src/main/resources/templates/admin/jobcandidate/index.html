@@ -22,63 +22,66 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>
-                        Employer Management Page
+                        Job Candidate Management Page
                         <small>it all starts here</small>
                     </h1>
                     <ol class="breadcrumb">
                         <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
-                        <li><a href="">Employer Management</a></li>
+                        <li><a href="">Candidate Management</a></li>
                     </ol>
                 </section>
-
                 <!-- Main content -->
                 <section class="content">
+
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">List of Employers</h3>
+                            <h3 class="box-title">List of Candidates</h3>
 
-                            <a href="/admin/employer/create" class="btn btn-success">Create Employer</a>
+                            <a href="/admin/job-candidate/create" class="btn btn-success">Create Candidate</a>
                         </div>
                         <div class="box-body">
-
-
-
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Account</th>
-                                        <th>Full name</th>
-                                        <th>Phone number</th>
-                                        <th>Gender</th>
-                                        <th>Province</th>
-                                        <th>City</th>
-                                        <th>Company</th>
+                                        <th>Applied</th>
+                                        <th>Saved</th>
+                                        <th>Saved At</th>
+                                        <th>Applied At</th>
+                                        <th>Candidate ID</th>
+                                        <th>Job ID</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="employer : ${employers}">
-                                        <td th:text="${employer.id}"></td>
-                                        <td th:text="${employer.account.email}"></td>
-                                        <td th:text="${employer.fullname}"></td>
-                                        <td th:text="${employer.phoneNumber}"></td>
-                                        <td th:text="${employer.gender}"></td>
-                                        <td th:text="${employer.province}"></td>
-                                        <td th:text="${employer.city}"></td>
-                                        <td th:text="${employer.company.name}"></td>
+                                    <tr th:each="jobCandidate : ${jobCandidates}">
+                                        <td th:text="${jobCandidate.id}"></td>
+                                        <td th:text="${jobCandidate.applied}"></td>
+                                        <td th:text="${jobCandidate.saved}"></td>
+                                        <td th:text="${jobCandidate.savedAt}"></td>
+                                        <td th:text="${jobCandidate.appliedAt}"></td>
+                                        <td th:text="${jobCandidate.candidate.id}"></td>
+                                        <td th:text="${jobCandidate.job.id}"></td>
                                         <td>
                                             <div style="display: flex; gap: 10px;">
-                                                <a th:href="@{/admin/employer/edit(id=${employer.id})}" class="btn btn-primary">Edit</a>
-                                                <a class="btn btn-danger btn-sm" th:href="@{/admin/employer/delete(id=${employer.id})}" 
-                                                   onclick="return confirm('Are you sure? The information of the account will be deleted with the employer!')">Delete</a>
-
+                                                <a th:href="@{/admin/job-candidate/edit(id=${jobCandidate.id})}" class="btn btn-primary">Edit</a>
+                                                <a class="btn btn-danger btn-sm" th:href="@{/admin/job-candidate/delete(id=${jobCandidate.id})}" 
+                                                   onclick="return confirm('Are you sure? The information of the job candidate is connected with each other!')">Delete</a>
                                             </div>
+
                                             </div>
                                         </td>
 
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+
+                    </div>
+                    <div class="content">
+                        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <p th:text="${errorMessage}"></p>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     </div>
                 </section>
