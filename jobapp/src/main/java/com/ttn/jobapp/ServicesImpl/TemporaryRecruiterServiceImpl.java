@@ -35,5 +35,15 @@ public class TemporaryRecruiterServiceImpl implements TemporaryRecruiterService{
     public void delete(Long id) {
         this.tempRecruiterRepo.deleteById(id);
     }
+
+    @Override
+    public TemporaryRecruiter getTempRecruiterByIds(Long companyId, Long recruiterId) {
+        return this.tempRecruiterRepo.getTempRecruiterByIds(companyId, recruiterId);
+    }
+
+    @Override
+    public List<TemporaryRecruiter> getTempRecruiterByCompany(Long companyId) {
+        return this.tempRecruiterRepo.getTempRecruiterByCompany(companyId);
+    }
     
 }

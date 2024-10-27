@@ -5,6 +5,7 @@
 package com.ttn.jobapp.Repositories;
 
 import com.ttn.jobapp.Pojo.Candidate;
+import com.ttn.jobapp.Pojo.CompanyCandidate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -27,5 +28,6 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long>{
     
     @Query("SELECT c FROM Candidate c LEFT JOIN CompanyCandidate cc ON c.id = cc.candidate.id WHERE cc.candidate IS NULL")
     List<Candidate> findCandidatesWithoutCompany();
+    
 }
 

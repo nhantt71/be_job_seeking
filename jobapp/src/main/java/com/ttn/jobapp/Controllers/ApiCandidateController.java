@@ -8,11 +8,13 @@ import com.ttn.jobapp.Dto.CandidateDto;
 import com.ttn.jobapp.Pojo.Account;
 import com.ttn.jobapp.Pojo.CV;
 import com.ttn.jobapp.Pojo.Candidate;
+import com.ttn.jobapp.Pojo.CompanyCandidate;
 import com.ttn.jobapp.Pojo.MongoExtractCV;
 import com.ttn.jobapp.Repositories.MongoExtractCVRepository;
 import com.ttn.jobapp.Services.AccountService;
 import com.ttn.jobapp.Services.CVService;
 import com.ttn.jobapp.Services.CandidateService;
+import com.ttn.jobapp.Services.CompanyCandidateService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,9 @@ public class ApiCandidateController {
 
     @Autowired
     private CVService cvs;
+    
+    @Autowired
+    private CompanyCandidateService ccs;
 
     @GetMapping("/get-candidates")
     public ResponseEntity<List<Candidate>> getCandidates() {
@@ -239,4 +244,26 @@ public class ApiCandidateController {
         return new ResponseEntity<>(cands, HttpStatus.OK);
     }
 
+    
+    @GetMapping("/get-saved-candidates/{companyId}")
+    public ResponseEntity<List<CandidateDto>> getSavedCandidates(
+            @PathVariable("companyId") Long companyId){
+        List<CompanyCandidate> companyCandidate = this.ccs.getSavedCandidateByCompany(companyId);
+        List<CandidateDto> savedCandidateDto = companyCandidate.stream().map(x -> {
+            CandidateDto cDto = new CandidateDto();
+            Candidate can = this.cs.getCandidateById(x.getCandidate().getId());
+            cDto.setId(can.getId());
+            cDto.setFullname(can.getFullname());
+            cDto.setPhoneNumber(can.getPhoneNumber());
+
+            Account a = this.as.getAccountById(can.getAccount().getId());
+            cDto.setEmail(a.getEmail());
+
+            String fileCV = this.cvs.getMainCVByCandidateId(x.getId());
+            cDto.setFileCV(fileCV);
+            return cDto;
+        }).collect(Collectors.toList());
+        
+        return new ResponseEntity<>(savedCandidateDto, HttpStatus.OK);
+    }
 }

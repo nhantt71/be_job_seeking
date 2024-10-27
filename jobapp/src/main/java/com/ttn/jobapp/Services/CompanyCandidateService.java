@@ -17,4 +17,13 @@ public interface CompanyCandidateService {
     List<CompanyCandidate> getCompanyCandidates();
     
     void delete(Long id);
+    
+    Boolean checkSavedStatus(Long candidateId, Long companyId);
+    
+    CompanyCandidate saveCandidate(Long candidateId, Long companyId);
+    
+    CompanyCandidate unsaveCandidate(Long candidateId, Long companyId);
+    
+    List<CompanyCandidate> getSavedCandidateByCompany(Long companyId);
+    
 }
