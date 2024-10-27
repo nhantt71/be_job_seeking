@@ -17,4 +17,8 @@ public interface TemporaryRecruiterService {
     List<TemporaryRecruiter> getTempRecruiter();
     
     void delete(Long id);
+    
+    TemporaryRecruiter getTempRecruiterByIds(Long companyId, Long recruiterId);
+    
+    List<TemporaryRecruiter> getTempRecruiterByCompany(Long companyId);
 }
