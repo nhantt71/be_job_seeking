@@ -17,4 +17,12 @@ public class TemporaryRecruiterDto {
     
     private Long recruiterId;
     
+    private String avatar;
+    
+    private String fullname;
+    
+    private String email;
+    
+    private String phoneNumber;
+    
 }

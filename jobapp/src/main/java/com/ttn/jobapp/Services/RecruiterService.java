@@ -6,7 +6,6 @@ package com.ttn.jobapp.Services;
 
 import com.ttn.jobapp.Pojo.Recruiter;
 import java.util.List;
-
 /**
  *
  * @author Win11
@@ -24,4 +23,6 @@ public interface RecruiterService {
     Recruiter getRecruiterByEmail(String email);
     
     List<Recruiter> getRecruitersWithoutCompanyId();
+    
+    List<Recruiter> getRecruitersByCompany(Long companyId);
 }

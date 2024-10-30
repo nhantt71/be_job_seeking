@@ -15,10 +15,10 @@ import org.springframework.data.repository.query.Param;
  * @author Win11
  */
 public interface TemporaryRecruiterRepository extends JpaRepository<TemporaryRecruiter, Long>{
-    @Query("SELECT tr FROM TemporaryRecruiter tr WHERE tr.company.id = companyId AND tr.recruiter.id = recruiterId")
+    @Query("SELECT tr FROM TemporaryRecruiter tr WHERE tr.company.id = :companyId AND tr.recruiter.id = :recruiterId")
     TemporaryRecruiter getTempRecruiterByIds(@Param("companyId") Long companyId, 
             @Param("recruiterId") Long recruiterId);
     
-    @Query("SELECT tr FROM TemporaryRecruiter tr WHERE tr.company.id = companyId")
+    @Query("SELECT tr FROM TemporaryRecruiter tr WHERE tr.company.id = :companyId")
     List<TemporaryRecruiter> getTempRecruiterByCompany(@Param("companyId") Long companyId);
 }

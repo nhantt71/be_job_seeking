@@ -7,10 +7,14 @@ package com.ttn.jobapp.Repositories;
 import com.ttn.jobapp.Pojo.MongoExtractCV;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author Win11
  */
 @Repository
-public interface MongoExtractCVRepository extends MongoRepository<MongoExtractCV, String>{}
+@Transactional
+public interface MongoExtractCVRepository extends MongoRepository<MongoExtractCV, String>{
+    void deleteByCandidateId(Long candidateId);
+}

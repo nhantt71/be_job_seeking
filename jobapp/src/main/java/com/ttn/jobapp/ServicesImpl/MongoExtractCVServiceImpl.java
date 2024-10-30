@@ -53,4 +53,9 @@ public class MongoExtractCVServiceImpl implements MongoExtractCVService {
         return "";
     }
 
+    @Override
+    public void deleteByCandidateId(Long candidateId) {
+        this.cvRepository.deleteByCandidateId(candidateId);
+    }
+
 }

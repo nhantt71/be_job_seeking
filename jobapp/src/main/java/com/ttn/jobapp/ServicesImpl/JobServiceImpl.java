@@ -48,25 +48,27 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<JobDto> getFindingJobs(String keyword, Long cateId, String province) {
-
         List<Job> jobs = new ArrayList<>();
+
+        // Adjust the logic to handle null checks and combine results
+        if (keyword != null) {
+            jobs.addAll(this.jr.findAllByKeyword(keyword.toLowerCase()));
+        }
 
         if (cateId != null) {
             jobs.addAll(this.jr.findAllByCategory(cateId));
-        }
-
-        if (keyword != null) {
-            jobs.addAll(this.jr.findAllByKeyword(keyword));
         }
 
         if (province != null) {
             jobs.addAll(this.jr.findAllByProvince(province));
         }
 
+        // If no parameters are provided, fetch all jobs
         if (keyword == null && cateId == null && province == null) {
             jobs.addAll(this.jr.findAll());
         }
 
+        // Use distinct to avoid duplicates
         return jobs.stream()
                 .distinct()
                 .map(x -> {
@@ -224,6 +226,31 @@ public class JobServiceImpl implements JobService {
                 }).collect(Collectors.toList());
 
         return jDto;
+    }
+
+    @Override
+    public List<JobDto> getAllJobs() {
+        List<Job> jobs = this.jr.findAll();
+
+        return jobs.stream()
+                .distinct()
+                .map(x -> {
+                    JobDto jDto = new JobDto();
+                    jDto.setId(x.getId());
+                    jDto.setDetail(x.getDetail());
+                    jDto.setAddress(x.getCompany().getAddress().getProvince());
+                    jDto.setCompanyLogo(x.getCompany().getLogo());
+                    jDto.setName(x.getName());
+                    jDto.setCompanyId(x.getCompany().getId());
+                    jDto.setCompanyName(x.getCompany().getName());
+                    jDto.setSalary(x.getSalary());
+                    jDto.setCategoryId(x.getCategory().getId());
+                    jDto.setCreatedDate(LocalDate.now());
+                    jDto.setEndDate(x.getEndDate());
+                    jDto.setExperience(x.getExperience());
+                    return jDto;
+                })
+                .collect(Collectors.toList());
     }
 
 }

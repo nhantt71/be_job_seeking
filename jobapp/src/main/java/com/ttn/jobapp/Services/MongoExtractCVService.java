@@ -12,4 +12,6 @@ import com.ttn.jobapp.Pojo.MongoExtractCV;
  */
 public interface MongoExtractCVService {
     MongoExtractCV extractCVInformation(String extractedText, Long candidateId);
+    
+    void deleteByCandidateId(Long candidateId);
 }

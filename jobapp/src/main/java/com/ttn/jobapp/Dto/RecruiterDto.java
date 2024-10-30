@@ -30,4 +30,8 @@ public class RecruiterDto {
     private String phoneNumber;
     
     private Long id;
+    
+    private String email;
+    
+    private String avatar;
 }

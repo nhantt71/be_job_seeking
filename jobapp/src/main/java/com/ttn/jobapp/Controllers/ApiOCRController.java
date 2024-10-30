@@ -110,5 +110,16 @@ public class ApiOCRController {
             return new ResponseEntity<>("Có lỗi xảy ra trong quá trình xử lý hình ảnh từ URL.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    @DeleteMapping("/delete-by-candidate-id/{candidateId}")
+    public ResponseEntity<String> deleteByCandidateId(@PathVariable Long candidateId) {
+        try {
+            this.cvExtractionService.deleteByCandidateId(candidateId);
+            return ResponseEntity.ok("Document with candidateId " + candidateId + " has been deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Error deleting document: " + e.getMessage());
+        }
+    }
 
 }
