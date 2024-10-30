@@ -100,6 +100,17 @@ public class ApiCVController {
         return new ResponseEntity<>(this.cvService.save(cv), HttpStatus.OK);
     }
     
+     @PostMapping("/unmake-all-main-cv")
+    public ResponseEntity<String> unmakeAllMainCV(@RequestParam("candidateId") Long candidateId){
+        List<CV> cvs = this.cvService.getCVsByCandidateId(candidateId);
+
+        cvs.forEach(x -> {
+            x.setMainCV(Boolean.FALSE);
+        });
+        
+        return new ResponseEntity<>("Success false all main cv!", HttpStatus.OK);
+    }
+    
     @PostMapping("/unmake-main-cv")
     public ResponseEntity<CV> unmakeMainCV(@RequestParam("id") Long id){
         CV cv = this.cvService.getCVById(id);

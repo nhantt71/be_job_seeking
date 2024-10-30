@@ -50,5 +50,10 @@ public class RecruiterServiceImpl implements RecruiterService{
     public List<Recruiter> getRecruitersWithoutCompanyId() {
         return er.findRecruitersWithoutCompanyId();
     }
+
+    @Override
+    public List<Recruiter> getRecruitersByCompany(Long companyId) {
+        return er.getRecruitersByCompany(companyId);
+    }
     
 }

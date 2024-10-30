@@ -25,4 +25,7 @@ public interface RecruiterRepository extends JpaRepository<Recruiter, Long> {
 
     @Query("SELECT r FROM Recruiter r WHERE r.company.id IS NULL")
     List<Recruiter> findRecruitersWithoutCompanyId();
+    
+    @Query("SELECT r FROM Recruiter r WHERE r.company.id = :companyId")
+    List<Recruiter> getRecruitersByCompany(@Param("companyId") Long companyId);
 }

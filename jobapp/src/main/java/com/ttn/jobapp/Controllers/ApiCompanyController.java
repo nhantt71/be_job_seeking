@@ -116,6 +116,13 @@ public class ApiCompanyController {
         return new ResponseEntity<>(comDto, HttpStatus.OK);
     }
 
+    @GetMapping("/get-company/{id}")
+    public ResponseEntity<Company> getCompany(@PathVariable("id") Long id) {
+        Company com = this.cs.getCompanyById(id);
+
+        return new ResponseEntity<>(com, HttpStatus.OK);
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<CompanyDto>> getSearchCompanies(@RequestParam("keyword") String keyword) {
         String keyword1 = keyword;
@@ -149,7 +156,6 @@ public class ApiCompanyController {
     public ResponseEntity<?> createCompany(
             @RequestParam Map<String, String> params,
             @RequestPart MultipartFile file,
-            @RequestBody Recruiter recruiter,
             @RequestBody Address address) {
 
         if (!params.containsKey("email") || params.get("email").isEmpty()) {
@@ -187,10 +193,7 @@ public class ApiCompanyController {
         company.setName(params.get("name"));
         company.setPhoneNumber(params.get("phoneNumber"));
         company.setWebsite(params.get("website"));
-        company.setRecruiter(recruiter);
         company.setVerified(false);
-        Long id = Long.valueOf("1");
-        company.setRecruiter(this.rs.getRecruiterById(id));
 
         try {
             Map<?, ?> res = this.cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));

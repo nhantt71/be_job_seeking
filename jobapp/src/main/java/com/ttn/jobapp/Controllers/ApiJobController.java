@@ -94,6 +94,11 @@ public class ApiJobController {
         return new ResponseEntity<>(this.js.getJobs(), HttpStatus.OK);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<JobDto>> getAllJobs() {
+        return new ResponseEntity<>(this.js.getAllJobs(), HttpStatus.OK);
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<JobDto>> findingJobs(@RequestParam Map<String, String> params) {
         String keyword = params.get("keyword");
@@ -108,13 +113,7 @@ public class ApiJobController {
             }
         }
 
-        List<JobDto> resultJobs;
-
-        if (keyword == null && cateId == null && province == null) {
-            resultJobs = this.js.getFindingJobs(null, null, null);
-        } else {
-            resultJobs = this.js.getFindingJobs(keyword != null ? keyword.toLowerCase() : null, cateId, province);
-        }
+        List<JobDto> resultJobs = this.js.getFindingJobs(keyword, cateId, province);
 
         if (resultJobs.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -405,7 +404,7 @@ public class ApiJobController {
 
         return new ResponseEntity<>("Published job successfully!", HttpStatus.OK);
     }
-    
+
     @PostMapping("/unpublish/{jobId}")
     public ResponseEntity<String> unpublishJob(@PathVariable("jobId") Long jobId) {
         Job job = js.getJobById(jobId);
@@ -566,9 +565,9 @@ public class ApiJobController {
             return new ResponseEntity<>("Error updating job", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/get-job-by-id/{id}")
-    public ResponseEntity<Job> getJobById(@PathVariable("id") Long id){
+    public ResponseEntity<Job> getJobById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(this.js.getJobById(id), HttpStatus.OK);
     }
 

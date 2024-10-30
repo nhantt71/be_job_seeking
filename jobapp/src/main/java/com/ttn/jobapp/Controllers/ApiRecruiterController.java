@@ -5,6 +5,7 @@
 package com.ttn.jobapp.Controllers;
 
 import com.ttn.jobapp.Dto.RecruiterDto;
+import com.ttn.jobapp.Dto.TemporaryRecruiterDto;
 import com.ttn.jobapp.Pojo.Account;
 import com.ttn.jobapp.Pojo.Company;
 import com.ttn.jobapp.Pojo.Recruiter;
@@ -13,7 +14,10 @@ import com.ttn.jobapp.Services.AccountService;
 import com.ttn.jobapp.Services.CompanyService;
 import com.ttn.jobapp.Services.RecruiterService;
 import com.ttn.jobapp.Services.TemporaryRecruiterService;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -66,8 +70,6 @@ public class ApiRecruiterController {
         } else {
             recruiter.setFullname(emDto.getFullname());
             recruiter.setPhoneNumber(emDto.getPhoneNumber());
-            recruiter.setFullname(emDto.getFullname());
-            recruiter.setPhoneNumber(emDto.getPhoneNumber());
             recruiter.setCity(emDto.getCity());
             recruiter.setGender(emDto.getGender());
             recruiter.setProvince(emDto.getProvince());
@@ -79,7 +81,8 @@ public class ApiRecruiterController {
     @PostMapping("/create")
     public ResponseEntity<?> createRecruiterWithCompany(
             @RequestParam Map<String, String> params,
-            @RequestBody Account account) {
+            @RequestBody Account account,
+            @RequestBody Company company) {
 
         if (!params.containsKey("phoneNumber") || params.get("phoneNumber").isEmpty()) {
             return new ResponseEntity<>("Phone number is required!", HttpStatus.BAD_REQUEST);
@@ -112,9 +115,14 @@ public class ApiRecruiterController {
         recruiter.setCity(params.get("city"));
         recruiter.setProvince(params.get("province"));
         recruiter.setGender(params.get("gender"));
+        recruiter.setCompany(company);
+        
+        Recruiter savedRecruiter = this.rs.save(recruiter);
+        company.setRecruiter(savedRecruiter);
+        this.comService.save(company);
 
         try {
-            return new ResponseEntity<>(this.rs.save(recruiter), HttpStatus.CREATED);
+            return new ResponseEntity<>(this.rs.save(savedRecruiter), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>("An error occurred while creating the recruiter.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -219,10 +227,45 @@ public class ApiRecruiterController {
         TemporaryRecruiter tempRecruiter = this.tempReService.getTempRecruiterByIds(companyId, recruiterId);
         tempRecruiter.setCompany(null);
         this.tempReService.save(tempRecruiter);
-        
+
         return new ResponseEntity<>("Declined successfully!", HttpStatus.OK);
     }
-    
-//    @GetMapping("/get-waiting-recruiters-")
+
+    @GetMapping("/get-waiting-recruiters-by-company/{companyId}")
+    public ResponseEntity<List<TemporaryRecruiterDto>> getWaitingRecruitersByCompany(@PathVariable("companyId") Long companyId) {
+        List<TemporaryRecruiter> tempRecruiters = this.tempReService.getTempRecruiterByCompany(companyId);
+
+        List<TemporaryRecruiterDto> tempRecruiterDto = tempRecruiters.stream()
+                .map(x -> {
+                    TemporaryRecruiterDto temp = new TemporaryRecruiterDto();
+                    temp.setCompanyId(companyId);
+                    temp.setRecruiterId(x.getRecruiter().getId());
+                    temp.setAvatar(x.getRecruiter().getAccount().getAvatar());
+                    temp.setEmail(x.getRecruiter().getAccount().getEmail());
+                    temp.setPhoneNumber(x.getRecruiter().getPhoneNumber());
+                    temp.setFullname(x.getRecruiter().getFullname());
+                    return temp;
+                }).collect(Collectors.toList());
+
+        return new ResponseEntity<>(tempRecruiterDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-members-by-company/{companyId}")
+    public ResponseEntity<List<RecruiterDto>> getRecruitersByCompany(@PathVariable("companyId") Long companyId) {
+        List<Recruiter> recruiters = this.rs.getRecruitersByCompany(companyId);
+
+        List<RecruiterDto> recruitersDto = recruiters.stream().map(x -> {
+            RecruiterDto rDto = new RecruiterDto();
+            rDto.setId(x.getId());
+            rDto.setFullname(x.getFullname());
+            rDto.setPhoneNumber(x.getPhoneNumber());
+            rDto.setEmail(x.getAccount().getEmail());
+            rDto.setAvatar(x.getAccount().getAvatar());
+            return rDto;
+        }).collect(Collectors.toList());
+
+        return new ResponseEntity<>(recruitersDto, HttpStatus.OK);
+    }
+
 
 }

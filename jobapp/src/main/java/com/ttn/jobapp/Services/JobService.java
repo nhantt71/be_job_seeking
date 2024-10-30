@@ -34,5 +34,7 @@ public interface JobService {
     
     List<JobDto> findCompanyJobsByKeyword(String keyword, Long companyId);
     
+    List<JobDto> getAllJobs();
+    
 
 }
