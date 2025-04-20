@@ -5,15 +5,12 @@
 package com.ttn.jobapp.Controllers;
 
 import com.ttn.jobapp.Dto.RecruiterDto;
-import com.ttn.jobapp.Dto.TemporaryRecruiterDto;
 import com.ttn.jobapp.Pojo.Account;
 import com.ttn.jobapp.Pojo.Company;
 import com.ttn.jobapp.Pojo.Recruiter;
-import com.ttn.jobapp.Pojo.TemporaryRecruiter;
 import com.ttn.jobapp.Services.AccountService;
 import com.ttn.jobapp.Services.CompanyService;
 import com.ttn.jobapp.Services.RecruiterService;
-import com.ttn.jobapp.Services.TemporaryRecruiterService;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
@@ -35,9 +32,6 @@ public class ApiRecruiterController {
     private RecruiterService rs;
 
     @Autowired
-    private TemporaryRecruiterService tempReService;
-
-    @Autowired
     private CompanyService comService;
 
     @Autowired
@@ -54,7 +48,7 @@ public class ApiRecruiterController {
             recruiterDto.setFullname(recruiter.getFullname());
             recruiterDto.setPhoneNumber(recruiter.getPhoneNumber());
             recruiterDto.setCity(recruiter.getCity());
-            recruiterDto.setCompanyId(recruiter.getCompany().getId());
+
             recruiterDto.setGender(recruiter.getGender());
             recruiterDto.setProvince(recruiter.getProvince());
             return new ResponseEntity<>(recruiterDto, HttpStatus.OK);
@@ -115,7 +109,6 @@ public class ApiRecruiterController {
         recruiter.setCity(params.get("city"));
         recruiter.setProvince(params.get("province"));
         recruiter.setGender(params.get("gender"));
-        recruiter.setCompany(company);
         
         Recruiter savedRecruiter = this.rs.save(recruiter);
         company.setRecruiter(savedRecruiter);
@@ -168,12 +161,6 @@ public class ApiRecruiterController {
 
         Recruiter savedRecruiter = this.rs.save(recruiter);
 
-        TemporaryRecruiter tempRecruiter = new TemporaryRecruiter();
-        tempRecruiter.setRecruiter(savedRecruiter);
-        tempRecruiter.setCompany(company);
-
-        this.tempReService.save(tempRecruiter);
-
         try {
             return new ResponseEntity<>(savedRecruiter, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -192,80 +179,11 @@ public class ApiRecruiterController {
         recruiterDto.setFullname(recruiter.getFullname());
         recruiterDto.setPhoneNumber(recruiter.getPhoneNumber());
         recruiterDto.setGender(recruiter.getGender());
-        recruiterDto.setCompanyId(recruiter.getCompany().getId());
         recruiterDto.setAccountId(recruiter.getAccount().getId());
 
         return new ResponseEntity<>(recruiterDto, HttpStatus.OK);
     }
 
-    @PostMapping("/kick-member/{recruiterId}")
-    public ResponseEntity<String> kickMember(@PathVariable("recruiterId") Long recruiterId,
-            @RequestParam("companyId") Long companyId) {
-        Recruiter recruiter = this.rs.getRecruiterById(recruiterId);
-        recruiter.setCompany(null);
-        this.rs.save(recruiter);
-
-        return new ResponseEntity<>("Kicked successfully", HttpStatus.OK);
-    }
-
-    @PostMapping("/approve-member/{recruiterId}")
-    public ResponseEntity<Recruiter> approveMember(@PathVariable("recruiterId") Long recruiterId,
-            @RequestParam("companyId") Long companyId) {
-        Recruiter recruiter = this.rs.getRecruiterById(recruiterId);
-        recruiter.setCompany(this.comService.getCompanyById(companyId));
-        Recruiter savedRecruiter = this.rs.save(recruiter);
-        TemporaryRecruiter tempRecruiter = this.tempReService.getTempRecruiterByIds(companyId, recruiterId);
-        tempRecruiter.setCompany(null);
-        this.tempReService.save(tempRecruiter);
-
-        return new ResponseEntity<>(savedRecruiter, HttpStatus.OK);
-    }
-
-    @PostMapping("/decline-member/{recruiterId}")
-    public ResponseEntity<String> declineMember(@PathVariable("recruiterId") Long recruiterId,
-            @RequestParam("companyId") Long companyId) {
-        TemporaryRecruiter tempRecruiter = this.tempReService.getTempRecruiterByIds(companyId, recruiterId);
-        tempRecruiter.setCompany(null);
-        this.tempReService.save(tempRecruiter);
-
-        return new ResponseEntity<>("Declined successfully!", HttpStatus.OK);
-    }
-
-    @GetMapping("/get-waiting-recruiters-by-company/{companyId}")
-    public ResponseEntity<List<TemporaryRecruiterDto>> getWaitingRecruitersByCompany(@PathVariable("companyId") Long companyId) {
-        List<TemporaryRecruiter> tempRecruiters = this.tempReService.getTempRecruiterByCompany(companyId);
-
-        List<TemporaryRecruiterDto> tempRecruiterDto = tempRecruiters.stream()
-                .map(x -> {
-                    TemporaryRecruiterDto temp = new TemporaryRecruiterDto();
-                    temp.setCompanyId(companyId);
-                    temp.setRecruiterId(x.getRecruiter().getId());
-                    temp.setAvatar(x.getRecruiter().getAccount().getAvatar());
-                    temp.setEmail(x.getRecruiter().getAccount().getEmail());
-                    temp.setPhoneNumber(x.getRecruiter().getPhoneNumber());
-                    temp.setFullname(x.getRecruiter().getFullname());
-                    return temp;
-                }).collect(Collectors.toList());
-
-        return new ResponseEntity<>(tempRecruiterDto, HttpStatus.OK);
-    }
-
-    @GetMapping("/get-members-by-company/{companyId}")
-    public ResponseEntity<List<RecruiterDto>> getRecruitersByCompany(@PathVariable("companyId") Long companyId) {
-        List<Recruiter> recruiters = this.rs.getRecruitersByCompany(companyId);
-
-        List<RecruiterDto> recruitersDto = recruiters.stream().map(x -> {
-            RecruiterDto rDto = new RecruiterDto();
-            rDto.setId(x.getId());
-            rDto.setFullname(x.getFullname());
-            rDto.setPhoneNumber(x.getPhoneNumber());
-            rDto.setEmail(x.getAccount().getEmail());
-            rDto.setAvatar(x.getAccount().getAvatar());
-            return rDto;
-        }).collect(Collectors.toList());
-
-        return new ResponseEntity<>(recruitersDto, HttpStatus.OK);
-    }
 
 
 }

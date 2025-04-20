@@ -5,7 +5,9 @@ package com.ttn.jobapp.Pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @lombok.Getter
@@ -21,6 +23,7 @@ public class Job {
     private String salary;
     
     private String name;
+    
     private String experience;
     
     @Column(name = "detail", columnDefinition = "TEXT")
@@ -30,15 +33,11 @@ public class Job {
     private LocalDate createdDate;
     
     @Column(name = "end_date")
-    private LocalDate endDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime endDate;
     
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean enable = false;
-    
-    @ManyToOne
-    @JoinColumn(name = "recruiter_id", nullable = false)
-    @JsonIgnore
-    private Recruiter recruiter;
     
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)

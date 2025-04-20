@@ -21,8 +21,5 @@ public interface RecruiterService {
     Recruiter getRecruiterById(Long id);
     
     Recruiter getRecruiterByEmail(String email);
-    
-    List<Recruiter> getRecruitersWithoutCompanyId();
-    
-    List<Recruiter> getRecruitersByCompany(Long companyId);
+   
 }

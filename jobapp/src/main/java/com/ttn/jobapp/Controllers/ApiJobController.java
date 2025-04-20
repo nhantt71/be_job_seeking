@@ -4,10 +4,7 @@
  */
 package com.ttn.jobapp.Controllers;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.api.ApiResponse;
-import com.cloudinary.utils.ObjectUtils;
-import com.ttn.jobapp.Dto.CustomMultipartFile;
+
 import com.ttn.jobapp.Dto.JobDto;
 import com.ttn.jobapp.Pojo.Candidate;
 import com.ttn.jobapp.Pojo.Category;
@@ -24,11 +21,8 @@ import com.ttn.jobapp.Services.JobService;
 import com.ttn.jobapp.Services.RecruiterService;
 import com.ttn.jobapp.ServicesImpl.FirebaseService;
 import jakarta.mail.MessagingException;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -85,9 +79,6 @@ public class ApiJobController {
 
     @Autowired
     private CategoryService cateS;
-
-    @Autowired
-    private Cloudinary cloudinary;
 
     @GetMapping
     public ResponseEntity<List<Job>> allJobs() {
@@ -253,16 +244,16 @@ public class ApiJobController {
             }
 
             String downloadUrl;
-            try {
-                downloadUrl = cloudinary.url()
-                        .resourceType("png")
-                        .publicId(cvFile)
-                        .secure(true)
-                        .generate();
-
-            } catch (Exception e) {
-                return new ResponseEntity<>("CV file not found.", HttpStatus.NOT_FOUND);
-            }
+//            try {
+//                downloadUrl = cloudinary.url()
+//                        .resourceType("png")
+//                        .publicId(cvFile)
+//                        .secure(true)
+//                        .generate();
+//
+//            } catch (Exception e) {
+//                return new ResponseEntity<>("CV file not found.", HttpStatus.NOT_FOUND);
+//            }
 
             try {
                 InputStream inputStream = new URL(cvFile).openStream();
@@ -297,9 +288,6 @@ public class ApiJobController {
             Long cateId = Optional.ofNullable(params.get("categoryId"))
                     .map(Long::valueOf)
                     .orElseThrow(() -> new IllegalArgumentException("categoryId is required"));
-            Long recruiterId = Optional.ofNullable(params.get("recruiterId"))
-                    .map(Long::valueOf)
-                    .orElseThrow(() -> new IllegalArgumentException("recruiterId is required"));
             Long companyId = Optional.ofNullable(params.get("companyId"))
                     .map(Long::valueOf)
                     .orElseThrow(() -> new IllegalArgumentException("companyId is required"));
@@ -310,17 +298,15 @@ public class ApiJobController {
             String name = params.getOrDefault("name", "");
             String salary = params.getOrDefault("salary", "");
 
-            Recruiter recruiter = this.rs.getRecruiterById(recruiterId);
             Category category = this.cateS.getCateById(cateId);
             Company company = this.cs.getCompanyById(companyId);
 
             Job job = new Job();
-            job.setRecruiter(recruiter);
             job.setCategory(category);
             job.setCompany(company);
             job.setDetail(detail);
             job.setCreatedDate(LocalDate.now());
-            job.setEndDate(LocalDate.parse(endDate));
+            job.setEndDate(LocalDateTime.parse(endDate));
             job.setExperience(experience);
             job.setName(name);
             job.setSalary(salary);
@@ -541,7 +527,7 @@ public class ApiJobController {
 
         try {
             job.setDetail(params.get("detail"));
-            job.setEndDate(LocalDate.parse(params.get("endDate")));
+            job.setEndDate(LocalDateTime.parse(params.get("endDate")));
             job.setExperience(params.get("experience"));
             job.setName(params.get("name"));
             job.setSalary(params.get("salary"));

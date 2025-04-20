@@ -52,8 +52,9 @@ public class CompanyServiceImpl implements CompanyService{
     }
 
     @Override
-    public List<Company> getUnverifiedCompanies() {
-        return cr.findUnverifiedCompaniesWithoutToken();
+    public Company getCompanyByRecruiterId(Long recruiterId) {
+        return this.cr.getCompanyByRecruiterId(recruiterId);
     }
+
     
 }

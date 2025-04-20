@@ -28,6 +28,8 @@ public class CompanyDto {
 
     private List<AddressDto> address;
     
+    private String taxCode;
+    
     private String logo;
 
     private String phoneNumber;
@@ -52,7 +54,7 @@ public class CompanyDto {
     
     private Long createdRecruiterId;
     
-    private Boolean verified;
+    private String reviewStatus;
     
     private MultipartFile imageFile;
     

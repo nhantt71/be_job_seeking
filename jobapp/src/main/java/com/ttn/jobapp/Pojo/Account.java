@@ -5,8 +5,9 @@
 package com.ttn.jobapp.Pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ttn.jobapp.Utils.AuthProvider;
+import com.ttn.jobapp.Utils.Role;
 import jakarta.persistence.*;
-import java.util.List;
 
 /**
  *
@@ -28,11 +29,21 @@ public class Account {
     @Column(nullable = false)
     private String password;
 
+    @Column
     private String avatar;
 
-    @Column(nullable = false)
-    private String role;
-    
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean verified = false;
+
+    @Column(name = "verify_token")
+    private String verifyToken;
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     @JoinColumn
     @JsonIgnore
@@ -44,3 +55,4 @@ public class Account {
     private Recruiter recruiter;
 
 }
+

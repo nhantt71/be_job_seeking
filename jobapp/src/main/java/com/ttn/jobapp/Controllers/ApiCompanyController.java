@@ -4,17 +4,13 @@
  */
 package com.ttn.jobapp.Controllers;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.ttn.jobapp.Dto.CompanyDto;
 import com.ttn.jobapp.Pojo.Address;
 import com.ttn.jobapp.Pojo.Company;
-import com.ttn.jobapp.Pojo.Recruiter;
-import com.ttn.jobapp.Pojo.VerificationToken;
-import com.ttn.jobapp.Repositories.VerificationTokenRepository;
 import com.ttn.jobapp.Services.AddressService;
 import com.ttn.jobapp.Services.CompanyService;
 import com.ttn.jobapp.Services.RecruiterService;
+import com.ttn.jobapp.Utils.ReviewStatus;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;
@@ -52,9 +48,6 @@ public class ApiCompanyController {
     private CompanyService cs;
 
     @Autowired
-    private Cloudinary cloudinary;
-
-    @Autowired
     private JavaMailSender mailSender;
 
     @Autowired
@@ -63,9 +56,6 @@ public class ApiCompanyController {
     @Autowired
     private AddressService as;
 
-    @Autowired
-    private VerificationTokenRepository verificationTokenRepository;
-
     @GetMapping
     public ResponseEntity<List<CompanyDto>> allCompanies() {
         List<Company> companies = this.cs.getCompanies();
@@ -73,7 +63,7 @@ public class ApiCompanyController {
         List<CompanyDto> comDto = new ArrayList<>();
 
         companies.forEach(x -> {
-            if (x.isVerified()) {
+            if (x.getReviewStatus().equals(ReviewStatus.APPROVED)) {
                 CompanyDto c = new CompanyDto();
 
                 c.setId(x.getId());
@@ -83,9 +73,9 @@ public class ApiCompanyController {
                 c.setInformation(x.getInformation());
                 c.setPhoneNumber(x.getPhoneNumber());
                 c.setWebsite(x.getWebsite());
-                c.setAddressDetail(x.getAddress().getDetail());
-                c.setCity(x.getAddress().getCity());
-                c.setProvince(x.getAddress().getProvince());
+//                c.setAddressDetail(x.getAddress().getDetail());
+//                c.setCity(x.getAddress().getCity());
+//                c.setProvince(x.getAddress().getProvince());
                 c.setJobAmount(this.cs.jobAmount(x));
 
                 comDto.add(c);
@@ -108,9 +98,9 @@ public class ApiCompanyController {
         comDto.setName(com.getName());
         comDto.setPhoneNumber(com.getPhoneNumber());
         comDto.setWebsite(com.getWebsite());
-        comDto.setAddressDetail(com.getAddress().getDetail());
-        comDto.setCity(com.getAddress().getCity());
-        comDto.setProvince(com.getAddress().getProvince());
+//        comDto.setAddressDetail(com.getAddress().getDetail());
+//        comDto.setCity(com.getAddress().getCity());
+//        comDto.setProvince(com.getAddress().getProvince());
         comDto.setCreatedRecruiterId(com.getRecruiter().getId());
 
         return new ResponseEntity<>(comDto, HttpStatus.OK);
@@ -140,9 +130,9 @@ public class ApiCompanyController {
                         c.setInformation(x.getInformation());
                         c.setPhoneNumber(x.getPhoneNumber());
                         c.setWebsite(x.getWebsite());
-                        c.setAddressDetail(x.getAddress().getDetail());
-                        c.setCity(x.getAddress().getCity());
-                        c.setProvince(x.getAddress().getProvince());
+//                        c.setAddressDetail(x.getAddress().getDetail());
+//                        c.setCity(x.getAddress().getCity());
+//                        c.setProvince(x.getAddress().getProvince());
                         c.setJobAmount(this.cs.jobAmount(x));
                         return c;
                     }).collect(Collectors.toList());
@@ -187,29 +177,29 @@ public class ApiCompanyController {
         }
 
         Company company = new Company();
-        company.setAddress(address);
+//        company.setAddress(address);
         company.setEmail(params.get("email"));
         company.setInformation(params.get("information"));
         company.setName(params.get("name"));
         company.setPhoneNumber(params.get("phoneNumber"));
         company.setWebsite(params.get("website"));
-        company.setVerified(false);
-
-        try {
-            Map<?, ?> res = this.cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-            company.setLogo(res.get("secure_url").toString());
-        } catch (IOException e) {
-            return new ResponseEntity<>("Failed to upload image.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        company.setReviewStatus(ReviewStatus.PENDING);
+//
+//        try {
+//            Map<?, ?> res = this.cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+//            company.setLogo(res.get("secure_url").toString());
+//        } catch (IOException e) {
+//            return new ResponseEntity<>("Failed to upload image.", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
 
         Company savedCompany = this.cs.save(company);
 
         String token = UUID.randomUUID().toString();
 
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setCompany(savedCompany);
-        verificationTokenRepository.save(verificationToken);
+//        VerificationToken verificationToken = new VerificationToken();
+//        verificationToken.setToken(token);
+//        verificationToken.setCompany(savedCompany);
+//        verificationTokenRepository.save(verificationToken);
 
         sendVerificationEmail(params.get("email"), token);
 
@@ -236,26 +226,26 @@ public class ApiCompanyController {
         } catch (MessagingException e) {
         }
     }
-
-    @GetMapping("/verify")
-    public ResponseEntity<String> verifyCompany(@RequestParam("token") String token) {
-        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
-
-        if (verificationToken == null) {
-            return new ResponseEntity<>("Invalid token", HttpStatus.BAD_REQUEST);
-        }
-
-        Company company = verificationToken.getCompany();
-        company.setVerified(true);
-        Recruiter recruiter = company.getRecruiter();
-        recruiter.setCompany(company);
-        rs.save(recruiter);
-        cs.save(company);
-
-        verificationTokenRepository.delete(verificationToken);
-
-        return new ResponseEntity<>("Company successfully verified!", HttpStatus.OK);
-    }
+//
+//    @GetMapping("/verify")
+//    public ResponseEntity<String> verifyCompany(@RequestParam("token") String token) {
+//        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
+//
+//        if (verificationToken == null) {
+//            return new ResponseEntity<>("Invalid token", HttpStatus.BAD_REQUEST);
+//        }
+//
+//        Company company = verificationToken.getCompany();
+//        company.setVerified(true);
+//        Recruiter recruiter = company.getRecruiter();
+//        recruiter.setCompany(company);
+//        rs.save(recruiter);
+//        cs.save(company);
+//
+//        verificationTokenRepository.delete(verificationToken);
+//
+//        return new ResponseEntity<>("Company successfully verified!", HttpStatus.OK);
+//    }
 
     @PostMapping("/edit/{id}")
     public ResponseEntity<CompanyDto> editCompany(@RequestParam Map<String, String> params,
@@ -282,18 +272,18 @@ public class ApiCompanyController {
             com.setWebsite(params.get("website"));
         }
 
-        Address address = com.getAddress();
-        if (address != null) {
-            if (params.get("city") != null) {
-                address.setCity(params.get("city"));
-            }
-            if (params.get("detail") != null) {
-                address.setDetail(params.get("detail"));
-            }
-            if (params.get("province") != null) {
-                address.setProvince(params.get("province"));
-            }
-        }
+//        Address address = com.getAddress();
+//        if (address != null) {
+//            if (params.get("city") != null) {
+//                address.setCity(params.get("city"));
+//            }
+//            if (params.get("detail") != null) {
+//                address.setDetail(params.get("detail"));
+//            }
+//            if (params.get("province") != null) {
+//                address.setProvince(params.get("province"));
+//            }
+//        }
 
         Company savedCompany = cs.save(com);
 
@@ -306,11 +296,11 @@ public class ApiCompanyController {
         comDto.setPhoneNumber(savedCompany.getPhoneNumber());
         comDto.setWebsite(savedCompany.getWebsite());
 
-        if (savedCompany.getAddress() != null) {
-            comDto.setAddressDetail(savedCompany.getAddress().getDetail());
-            comDto.setCity(savedCompany.getAddress().getCity());
-            comDto.setProvince(savedCompany.getAddress().getProvince());
-        }
+//        if (savedCompany.getAddress() != null) {
+//            comDto.setAddressDetail(savedCompany.getAddress().getDetail());
+//            comDto.setCity(savedCompany.getAddress().getCity());
+//            comDto.setProvince(savedCompany.getAddress().getProvince());
+//        }
 
         if (savedCompany.getRecruiter() != null) {
             comDto.setCreatedRecruiterId(savedCompany.getRecruiter().getId());
@@ -327,13 +317,10 @@ public class ApiCompanyController {
         if (file.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+//            Map<?, ?> res = this.cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+//            company.setLogo(res.get("secure_url").toString());
+//            return new ResponseEntity<>(this.cs.save(company), HttpStatus.OK);
+        return null;
 
-        try {
-            Map<?, ?> res = this.cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-            company.setLogo(res.get("secure_url").toString());
-            return new ResponseEntity<>(this.cs.save(company), HttpStatus.OK);
-        } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }

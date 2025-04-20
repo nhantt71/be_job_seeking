@@ -51,19 +51,17 @@
                                         <th>Gender</th>
                                         <th>Province</th>
                                         <th>City</th>
-                                        <th>Company</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr th:each="recruiter : ${recruiters}">
                                         <td th:text="${recruiter.id}"></td>
-                                        <td th:text="${recruiter?.account?.id}">No Account</td>
+                                        <td th:text="${recruiter.account.id}">No Account</td>
                                         <td th:text="${recruiter.fullname}"></td>
                                         <td th:text="${recruiter.phoneNumber}"></td>
                                         <td th:text="${recruiter.gender}"></td>
                                         <td th:text="${recruiter.province}"></td>
                                         <td th:text="${recruiter.city}"></td>
-                                        <td th:text="${recruiter?.company?.id}">No Company</td>
                                         <td>
                                             <div style="display: flex; gap: 10px;">
                                                 <a th:href="@{/admin/recruiter/edit(id=${recruiter.id})}" class="btn btn-primary">Edit</a>

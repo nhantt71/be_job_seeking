@@ -20,4 +20,6 @@ public interface EmailService {
     void sendEmailWithAttachment(String to, String from, String subject, String body, MultipartFile file) throws MessagingException;
     
     void sendSimpleEmail(String to, String subject, String body);
+    
+    void sendVerifyEmail(String email, String token);
 }

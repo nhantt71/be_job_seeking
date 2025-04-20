@@ -14,6 +14,7 @@ import com.ttn.jobapp.Services.RecruiterService;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -92,7 +93,6 @@ public class JobController {
         job.setEndDate(jobDto.getEndDate());
         job.setSalary(jobDto.getSalary());
         job.setCategory(this.cs.getCateById(jobDto.getCategoryId()));
-        job.setRecruiter(this.rs.getRecruiterById(jobDto.getRecruiterId()));
         job.setCompany(this.comService.getCompanyById(jobDto.getCompanyId()));
 
         this.js.save(job);
@@ -117,6 +117,9 @@ public class JobController {
             jobDto.setSalary(job.getSalary());
 
             model.addAttribute("jobDto", jobDto);
+            
+            model.addAttribute("formattedEndDate", job.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
+
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

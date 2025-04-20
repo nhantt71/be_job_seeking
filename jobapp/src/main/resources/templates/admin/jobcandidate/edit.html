@@ -65,16 +65,18 @@
                                         <option value="true">Yes</option>
                                     </select>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="savedAt">Saved At</label>
-                                    <input type="text" th:field="*{savedAt}" class="form-control" id="savedAt" placeholder="Select saved at">
+                                    <input type="datetime-local" name="savedAt"
+                                           th:value="${formattedSavedAt}" class="form-control" id="savedAt">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="appliedAt">Applied At</label>
-                                    <input type="text" th:field="*{appliedAt}" class="form-control" id="appliedAt" placeholder="Select applied at">
+                                    <input type="datetime-local" name="appliedAt"
+                                           th:value="${formattedAppliedAt}" class="form-control" id="appliedAt">
                                 </div>
-
 
                                 <div class="row">
                                     <button type="submit" class="btn btn-success">Edit</button>

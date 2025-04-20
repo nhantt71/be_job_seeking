@@ -4,12 +4,13 @@
  */
 package com.ttn.jobapp.ServicesImpl;
 
-import com.ttn.jobapp.Configs.CustomUserDetailsService;
 import com.ttn.jobapp.Pojo.*;
 import com.ttn.jobapp.Repositories.*;
 import com.ttn.jobapp.Services.AccountService;
+import com.ttn.jobapp.Services.CustomUserDetailsService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -32,9 +33,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private RecruiterRepository recruiterRepo;
-    
+
     @Autowired
-    private CustomUserDetailsService cuds;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Override
     public Account save(Account account) {
@@ -82,21 +83,19 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccountById(Long id) {
         return ar.findById(id).get();
     }
-    
-    
 
     @Override
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null && authentication.isAuthenticated()){
+        if (authentication != null && authentication.isAuthenticated()) {
             String email = authentication.getName();
-            return (User) cuds.loadUserByUsername(email);
+            return (User) customUserDetailsService.loadUserByUsername(email);
         }
         return null;
     }
 
     @Override
-    public Account getAccountByEmail(String email) {
+    public Optional<Account> getAccountByEmail(String email) {
         return ar.findByEmail(email);
     }
 
@@ -105,5 +104,21 @@ public class AccountServiceImpl implements AccountService {
         return ar.getRoleByEmail(email);
     }
 
+    @Override
+    public Optional<Account> findByVerifyToken(String verifyToken) {
+        return ar.findByVerifyToken(verifyToken);
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return ar.existsByEmail(email);
+    }
+
+    @Override
+    public Boolean checkVerified(String email) {
+        Account a = this.ar.findByEmail(email).get();
+        
+        return a.getVerified();
+    }
 
 }

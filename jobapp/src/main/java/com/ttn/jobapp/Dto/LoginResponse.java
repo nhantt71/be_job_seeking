@@ -4,25 +4,18 @@
  */
 package com.ttn.jobapp.Dto;
 
-import lombok.Data;
-
 /**
  *
- * @author Win11
+ * @author PC
  */
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 @Data
-public class TemporaryRecruiterDto {
-    
-    private Long companyId;
-    
-    private Long recruiterId;
-    
-    private String avatar;
-    
-    private String fullname;
-    
+@AllArgsConstructor
+public class LoginResponse {
+    private String accessToken;
+    private String tokenType;
     private String email;
-    
-    private String phoneNumber;
-    
+    private String role;
 }

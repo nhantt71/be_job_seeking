@@ -44,11 +44,7 @@
                                     <input type="text" th:field="*{name}" class="form-control" />
                                     <p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger" th:errors="*{name}"></p>
                                 </div>
-                                <div class="form-group">
-                                    <label>Updated Date:</label>
-                                    <input type="text" th:field="*{updatedDate}" class="form-control" />
-                                    <p th:if="${#fields.hasErrors('updatedDate')}" th:errorclass="text-danger" th:errors="*{updatedDate}"></p>
-                                </div>
+    
                                 <div class="form-group">
                                     <label>File CV</label>
                                     <div>

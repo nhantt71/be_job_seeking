@@ -6,6 +6,7 @@ package com.ttn.jobapp.Services;
 
 import com.ttn.jobapp.Pojo.Account;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.security.core.userdetails.User;
 
 
@@ -23,7 +24,14 @@ public interface AccountService{
     
     User getCurrentUser();
     
-    Account getAccountByEmail(String email);
+    Optional<Account> getAccountByEmail(String email);
 
     String getRoleByEmail(String email);
+    
+    Optional<Account> findByVerifyToken(String verifyToken);
+    
+    Boolean existsByEmail(String email);
+    
+    Boolean checkVerified(String email);
+    
 }

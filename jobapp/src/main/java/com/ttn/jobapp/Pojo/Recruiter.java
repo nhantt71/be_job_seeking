@@ -51,18 +51,5 @@ public class Recruiter {
     @JoinColumn(name = "account_id", unique = true)
     @JsonIgnore
     private Account account;
-
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "company_id", nullable = true)
-    private Company company;
-   
-    @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Job> jobs;
     
-    @OneToOne(mappedBy = "recruiter", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private TemporaryRecruiter temporaryRecruiter;
-
 }

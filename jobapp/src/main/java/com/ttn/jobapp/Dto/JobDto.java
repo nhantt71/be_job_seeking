@@ -5,6 +5,7 @@
 package com.ttn.jobapp.Dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,7 +26,7 @@ public class JobDto {
 
     private LocalDate createdDate;
 
-    private LocalDate endDate;
+    private LocalDateTime endDate;
     
     private String companyName;
     

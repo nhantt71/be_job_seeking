@@ -10,7 +10,8 @@ package com.ttn.jobapp.Pojo;
  */
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @lombok.Getter
@@ -30,7 +31,8 @@ public class CV {
     private Boolean mainCV = false;
 
     @Column(name = "updated_date")
-    private LocalDate updatedDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime updatedDate;
 
     @ManyToOne
     @JoinColumn(name = "candidate_id", nullable = false)

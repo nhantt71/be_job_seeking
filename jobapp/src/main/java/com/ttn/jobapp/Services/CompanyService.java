@@ -22,6 +22,5 @@ public interface CompanyService {
     
     List<Company> getFindingCompanies(String keyword);
     
-    List<Company> getUnverifiedCompanies();
-    
+    Company getCompanyByRecruiterId(Long recruiterId);
 }

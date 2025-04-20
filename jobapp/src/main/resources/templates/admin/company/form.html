@@ -9,12 +9,8 @@
 
             <div th:replace="admin/fragments/header::header"></div>
 
-            <!-- =============================================== -->
-
             <!-- Left side column. contains the sidebar -->
             <div th:replace="admin/fragments/sidebar::sidebar"></div>
-
-            <!-- =============================================== -->
 
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
@@ -38,53 +34,85 @@
                             <h3 class="box-title">Create Company</h3>
                         </div>
                         <div class="box-body">
-                            <form th:action="@{/admin/company/create}" enctype="multipart/form-data" th:object="${companyDto}" method="post">
+                            <form th:action="@{/admin/company/create}" enctype="multipart/form-data"
+                                  th:object="${companyDto}" method="post">
+
                                 <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input type="text" th:field="*{email}" class="form-control" id="email" placeholder="Enter email">
+                                    <input type="email" th:field="*{email}" class="form-control" id="email" required
+                                           placeholder="Enter email">
+                                    <p class="text-danger" th:if="${#fields.hasErrors('email')}"
+                                       th:errors="*{email}"></p>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="name">Name</label>
-                                    <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Enter name">
+                                    <input type="text" th:field="*{name}" class="form-control" id="name" required
+                                           placeholder="Enter name">
+                                    <p class="text-danger" th:if="${#fields.hasErrors('name')}"
+                                       th:errors="*{name}"></p>
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="taxCode">Tax code</label>
+                                    <input type="text" th:field="*{taxCode}" class="form-control" id="taxCode" required
+                                           placeholder="Enter tax code">
+                                    <p class="text-danger" th:if="${#fields.hasErrors('taxCode')}"
+                                       th:errors="*{taxCode}"></p>
+                                </div>
+
                                 <div class="form-group">
                                     <label for="information">Information</label>
-                                    <textarea th:field="*{information}" class="form-control" id="information" placeholder="Enter information" rows="4"></textarea>
+                                    <textarea th:field="*{information}" class="form-control" id="information" required
+                                              placeholder="Enter information" rows="4"></textarea>
+                                    <p class="text-danger" th:if="${#fields.hasErrors('information')}"
+                                       th:errors="*{information}"></p>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="phoneNumber">Phone number</label>
-                                    <input type="text" th:field="*{phoneNumber}" class="form-control" id="phoneNumber" placeholder="Enter phone number">
-                                </div>
-                                <div class="form-group">
-                                    <label for="website">Website</label>
-                                    <input type="text" th:field="*{website}" class="form-control" id="website" placeholder="Enter website">
+                                    <input type="text" th:field="*{phoneNumber}" class="form-control" id="phoneNumber"
+                                           required placeholder="Enter phone number">
+                                    <p class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}"
+                                       th:errors="*{phoneNumber}"></p>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Verified:</label>
-                                    <select th:field="*{verified}" class="form-control">
-                                        <option value="false">False</option>
-                                        <option value="true">True</option>
-                                    </select>
-                                    <p th:if="${#fields.hasErrors('verified')}" th:errorclass="text-danger" th:errors="*{verified}"></p>
+                                    <label for="website">Website</label>
+                                    <input type="text" th:field="*{website}" class="form-control" id="website" required
+                                           placeholder="Enter website">
+                                    <p class="text-danger" th:if="${#fields.hasErrors('website')}"
+                                       th:errors="*{website}"></p>
                                 </div>
+
+                                <div class="form-group">
+                                    <label>Review Status:</label>
+                                    <select th:field="*{reviewStatus}" class="form-control">
+                                        <option value="approved">Approved</option>
+                                        <option value="rejected">Rejected</option>
+                                        <option value="pending">Pending</option>
+                                    </select>
+                                    <p th:if="${#fields.hasErrors('reviewStatus')}" th:errorclass="text-danger" th:errors="*{reviewStatus}"></p>
+                                </div>
+
                                 <div class="form-group">
                                     <label>Logo</label>
                                     <div>
-                                        <input class="form-control" type="file" th:field="*{imageFile}">
-                                        <p th:if="${#fields.hasErrors('imageFile')}" th:errorclass="text-danger" th:errors="*{imageFile}"></p>
+                                        <input class="form-control" type="file" th:field="*{imageFile}" required>
+                                        <p th:if="${#fields.hasErrors('imageFile')}" class="text-danger"
+                                           th:errors="*{imageFile}"></p>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="addressId">Select Address</label>
-                                    <select th:field="*{addressId}" class="form-control" id="addressId">
+                                    <select th:field="*{addressId}" class="form-control" id="addressId" required>
                                         <option value="">-- Select Address --</option>
-                                        <option th:each="address : ${addresses}" th:value="${address.id}" th:text="${address.detail}"></option>
+                                        <option th:each="address : ${addresses}" th:value="${address.id}"
+                                                th:text="${address.detail}"></option>
                                     </select>
-                                    <p class="text-danger" th:if="${#fields.hasErrors('addressId')}" th:errors="*{addressId}"></p>
+                                    <p class="text-danger" th:if="${#fields.hasErrors('addressId')}"
+                                       th:errors="*{addressId}"></p>
                                 </div>
 
                                 <div class="form-group">
@@ -93,14 +121,16 @@
 
                                 <div class="form-group">
                                     <label for="createdRecruiterId">Select Recruiter</label>
-                                    <select th:field="*{createdRecruiterId}" class="form-control" id="createdRecruiterId">
-                                        <option value="">-- Select Address --</option>
-                                        <option th:each="recruiter : ${recruiters}" th:value="${recruiter.id}" th:text="${recruiter.account.email}"></option>
+                                    <select th:field="*{createdRecruiterId}" class="form-control" id="createdRecruiterId"
+                                            required>
+                                        <option value="">-- Select Recruiter --</option>
+                                        <option th:each="recruiter : ${recruiters}" th:value="${recruiter.id}"
+                                                th:text="${recruiter.account.email}"></option>
                                     </select>
-                                    <p class="text-danger" th:if="${#fields.hasErrors('createdRecruiterId')}" th:errors="*{createdRecruiterId}"></p>
+                                    <p class="text-danger" th:if="${#fields.hasErrors('createdRecruiterId')}"
+                                       th:errors="*{createdRecruiterId}"></p>
                                 </div>
 
-                                <!-- Button to create a new account -->
                                 <div class="form-group">
                                     <a href="/admin/recruiter/create" class="btn btn-primary">Create New Recruiter</a>
                                 </div>
@@ -114,17 +144,11 @@
                         </div>
                     </div>
                 </section>
-                <!-- /.content -->
             </div>
-            <!-- /.content-wrapper -->
 
             <div th:replace="admin/fragments/footer::footer"></div>
         </div>
-        <!-- ./wrapper -->
 
-        <!-- jQuery 3 -->
         <div th:replace="admin/fragments/script::script"></div>
-
     </body>
-
 </html>

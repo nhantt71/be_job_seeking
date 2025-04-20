@@ -2,13 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.ttn.jobapp.Configs;
+package com.ttn.jobapp.Dto;
 
 /**
  *
- * @author Win11
+ * @author PC
  */
-public class SecurityConstants {
-    public static final long JWT_EXPIRATION = 2592000000L;
-    public static final String JWT_SECRET = "resolmi";
+import lombok.Data;
+
+@Data
+public class LoginRequest {
+    private String email;
+    private String password;
 }

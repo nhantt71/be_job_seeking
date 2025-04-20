@@ -4,22 +4,24 @@
  */
 package com.ttn.jobapp.Controllers;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.ttn.jobapp.Dto.AccountDto;
 import com.ttn.jobapp.Pojo.Account;
 import com.ttn.jobapp.Repositories.AccountRepository;
 import com.ttn.jobapp.Services.AccountService;
-import com.ttn.jobapp.Utils.CloudinaryUtils;
+import com.ttn.jobapp.Services.SupabaseStorageService;
+import com.ttn.jobapp.Utils.AuthProvider;
+import com.ttn.jobapp.Utils.GenerateUniqueFileName;
+import com.ttn.jobapp.Utils.Role;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import java.util.Map;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 @RequestMapping("admin/account")
+@CrossOrigin
 public class AccountController {
 
     @Autowired
@@ -41,13 +44,10 @@ public class AccountController {
     private AccountRepository ar;
 
     @Autowired
-    private Cloudinary cloudinary;
-    
-    @Autowired
-    private CloudinaryUtils cloudinaryUtils;
-    
-    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SupabaseStorageService supabaseStorageService;
 
     @GetMapping
     public String account(Model model) {
@@ -59,6 +59,7 @@ public class AccountController {
     public String showCreatePage(Model model) {
         AccountDto accountDto = new AccountDto();
         accountDto.setRole("candidate");
+        accountDto.setVerified(false);
         model.addAttribute("accountDto", accountDto);
         return "admin/account/form";
     }
@@ -69,8 +70,9 @@ public class AccountController {
         return "redirect:/admin/account";
     }
 
+
     @PostMapping("/create")
-    public String createAccount(@Valid @ModelAttribute AccountDto accountDto, BindingResult result) throws IOException {
+    public String createAccount(@Valid @ModelAttribute AccountDto accountDto, BindingResult result) throws IOException, Exception {
         if (result.hasErrors()) {
             return "admin/account/form";
         }
@@ -82,10 +84,18 @@ public class AccountController {
         Account account = new Account();
         account.setEmail(accountDto.getEmail());
         account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
-        account.setRole(accountDto.getRole());
+        account.setVerified(accountDto.getVerified());
+        account.setProvider(AuthProvider.LOCAL);
 
-        Map res = this.cloudinary.uploader().upload(accountDto.getImageFile().getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-        account.setAvatar(res.get("secure_url").toString());
+        account.setRole(Role.valueOf(accountDto.getRole().toUpperCase()));
+
+        String avatarUrl = supabaseStorageService.uploadFile(
+                "avatar",
+                GenerateUniqueFileName.generateUniqueFileName(accountDto.getImageFile().getOriginalFilename()),
+                accountDto.getImageFile().getInputStream(),
+                accountDto.getImageFile().getContentType()
+        );
+        account.setAvatar(avatarUrl);
 
         this.as.save(account);
 
@@ -101,7 +111,8 @@ public class AccountController {
             AccountDto accountDto = new AccountDto();
             accountDto.setEmail(account.getEmail());
             accountDto.setPassword(account.getPassword());
-            accountDto.setRole(account.getRole());
+            accountDto.setRole(account.getRole().name());
+            accountDto.setVerified(account.getVerified());
 
             model.addAttribute("accountDto", accountDto);
 
@@ -115,40 +126,29 @@ public class AccountController {
 
     @PostMapping("/edit")
     public String updateAccount(Model model, @Valid @ModelAttribute AccountDto accountDto,
-            BindingResult result, @RequestParam Long id) throws IOException {
+            BindingResult result, @RequestParam Long id) throws IOException, Exception {
 
-        try {
-            Account account = ar.findById(id).get();
-            model.addAttribute("account", account);
-            
-            String imageUrl = account.getAvatar();
-
-            if (result.hasErrors()) {
-                return "admin/account/edit";
-            }
-
-            if (!accountDto.getImageFile().isEmpty()) {
-                Map res = this.cloudinary.uploader().upload(accountDto.getImageFile().getBytes(),
-                        ObjectUtils.asMap("resource_type", "auto"));
-                account.setAvatar(res.get("secure_url").toString());
-                
-                String publicId = cloudinaryUtils.extractPublicIdFromUrl(imageUrl);
-                this.cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-            }
-            
-            if (!account.getPassword().equals(accountDto.getPassword())){
-                account.setPassword(accountDto.getPassword());
-            }
-
-            account.setEmail(accountDto.getEmail());
-            account.setRole(accountDto.getRole());
-
-
-            this.as.save(account);
-
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+        Account account = ar.findById(id).get();
+        model.addAttribute("account", account);
+        if (result.hasErrors()) {
+            return "admin/account/edit";
         }
+        if (!accountDto.getImageFile().isEmpty()) {
+            String avatarUrl = supabaseStorageService.uploadFile(
+                    "avatar",
+                    GenerateUniqueFileName.generateUniqueFileName(accountDto.getImageFile().getOriginalFilename()),
+                    accountDto.getImageFile().getInputStream(),
+                    accountDto.getImageFile().getContentType()
+            );
+            account.setAvatar(avatarUrl);
+        }
+        if (!account.getPassword().equals(accountDto.getPassword())) {
+            account.setPassword(accountDto.getPassword());
+        }
+        account.setVerified(accountDto.getVerified());
+        account.setEmail(accountDto.getEmail());
+        account.setRole(Role.valueOf(accountDto.getRole().toUpperCase()));
+        this.as.save(account);
 
         return "redirect:/admin/account";
     }

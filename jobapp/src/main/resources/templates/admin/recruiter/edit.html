@@ -47,12 +47,6 @@
                                     <label>Account ID:</label>
                                     <input readonly type="text" th:value="${recruiter.account != null ? recruiter.account.id : 'No Account'}" name="accountId" class="form-control" />
                                 </div>
-                                <div class="form-group">
-                                    <label>Company ID:</label>
-                                    <input type="text" th:value="${recruiter.company != null ? recruiter.company.id : 'No Company'}" class="form-control" readonly />
-                                    <input type="hidden" th:field="*{companyId}" th:value="${recruiter.company != null ? recruiter.company.id : null}" />
-                                </div>
-
                                 <form th:action="@{/admin/recruiter/edit}" th:object="${recruiterDto}" method="post">
                                     <div class="form-group">
                                         <label>Full name:</label>

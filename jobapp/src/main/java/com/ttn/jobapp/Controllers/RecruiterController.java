@@ -54,9 +54,9 @@ public class RecruiterController {
 
     @GetMapping("/delete")
     public String deleteRecruiter(@RequestParam("id") Long id) {
+        this.cs.delete(this.cs.getCompanyByRecruiterId(id).getId());
         Recruiter r = rr.findById(id).get();
         as.delete(r.getAccount().getId());
-        r.setCompany(null);
         this.rs.delete(r.getId());
         return "redirect:/admin/recruiter";
     }
@@ -86,8 +86,6 @@ public class RecruiterController {
         recruiter.setGender(recruiterDto.getGender());
         recruiter.setProvince(recruiterDto.getProvince());
         recruiter.setAccount(this.as.getAccountById(recruiterDto.getAccountId()));
-        recruiter.setCompany(this.cs.getCompanyById(recruiterDto.getCompanyId()));
-
         this.rs.save(recruiter);
 
         return "redirect:/admin/recruiter";

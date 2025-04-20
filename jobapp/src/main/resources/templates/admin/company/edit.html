@@ -51,10 +51,13 @@
                                     <label for="email">Email</label>
                                     <input type="text" th:field="*{email}" class="form-control" id="email" placeholder="Enter email">
                                 </div>
-
                                 <div class="form-group">
                                     <label for="name">Name</label>
                                     <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Enter name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="taxCode">Tax code</label>
+                                    <input type="text" th:field="*{taxCode}" class="form-control" id="taxCode" placeholder="Enter tax code">
                                 </div>
                                 <div class="form-group">
                                     <label for="information">Information</label>
@@ -80,12 +83,13 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label>Verified:</label>
-                                    <select th:field="*{verified}" class="form-control">
-                                        <option value="false">False</option>
-                                        <option value="true">True</option>
+                                    <label>Review Status:</label>
+                                    <select th:field="*{reviewStatus}" class="form-control">
+                                        <option value="APPROVED">Approved</option>
+                                        <option value="REJECTED">Rejected</option>
+                                        <option value="PENDING">Pending</option>
                                     </select>
-                                    <p th:if="${#fields.hasErrors('verified')}" th:errorclass="text-danger" th:errors="*{verified}"></p>
+                                    <p th:if="${#fields.hasErrors('reviewStatus')}" th:errorclass="text-danger" th:errors="*{reviewStatus}"></p>
                                 </div>
                                 <div class="form-group">
                                     <label for="currentAddress">Current Address</label>

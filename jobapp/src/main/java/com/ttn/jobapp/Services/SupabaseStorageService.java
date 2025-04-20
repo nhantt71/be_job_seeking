@@ -4,14 +4,13 @@
  */
 package com.ttn.jobapp.Services;
 
-import com.ttn.jobapp.Pojo.MongoExtractCV;
+import java.io.InputStream;
 
 /**
  *
- * @author Win11
+ * @author PC
  */
-public interface MongoExtractCVService {
-    MongoExtractCV extractCVInformation(String extractedText, Long candidateId);
-    
-    void deleteByCandidateId(Long candidateId);
+public interface SupabaseStorageService {
+    String uploadFile(String bucket, String filename, InputStream fileInputStream,
+            String contentType) throws Exception;
 }

@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
+import lombok.Data;
 
 /**
  *
@@ -21,8 +22,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "category")
-@lombok.Getter
-@lombok.Setter
+@Data
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -44,11 +44,13 @@
                                         <th>ID</th>
                                         <th>Email</th>
                                         <th>Name</th>
+                                        <th>Tax Code</th>
                                         <th>Information</th>
                                         <th>Phone Number</th>
                                         <th>Website</th>
                                         <th>Address</th>
                                         <th>Created By</th>
+                                        <th>Review Status</th>
                                         <th>Logo</th>
                                         <th>Action</th>
                                     </tr>
@@ -58,11 +60,13 @@
                                         <td th:text="${company.id}"></td>
                                         <td th:text="${company.email}"></td>
                                         <td th:text="${company.name}"></td>
+                                        <td th:text="${company.taxCode}"></td>
                                         <td th:utext="${company.information}"></td>
                                         <td th:text="${company.phoneNumber}"></td>
                                         <td th:text="${company.website}"></td>
                                         <td th:text="${company.address.id}"></td>
                                         <td th:text="${company.recruiter.id}"></td>
+                                        <td th:text="${company.reviewStatus}"></td>
                                         <td>
                                             <img th:src="@{${company.logo}}" alt="Logo" width="50" height="50"/>
                                         </td>

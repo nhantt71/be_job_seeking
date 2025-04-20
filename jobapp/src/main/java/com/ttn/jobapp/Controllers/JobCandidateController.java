@@ -11,6 +11,7 @@ import com.ttn.jobapp.Services.CandidateService;
 import com.ttn.jobapp.Services.JobCandidateService;
 import com.ttn.jobapp.Services.JobService;
 import jakarta.validation.Valid;
+import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -102,6 +103,9 @@ public class JobCandidateController {
             jobCandidateDto.setSavedAt(jobCandidate.getSavedAt());
 
             model.addAttribute("jobCandidateDto", jobCandidateDto);
+            
+            model.addAttribute("formattedAppliedAt", jobCandidate.getAppliedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
+            model.addAttribute("formattedSavedAt", jobCandidate.getSavedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

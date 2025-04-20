@@ -5,6 +5,7 @@
 package com.ttn.jobapp.Pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ttn.jobapp.Utils.ReviewStatus;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -25,6 +26,9 @@ public class Company {
     @Column(name = "name", nullable = false)
     private String name;
     
+    @Column(name = "tax_code", nullable = false, unique = true)
+    private String taxCode;
+    
     private String logo;
 
     @Column(name = "email", unique = true, nullable = false)
@@ -39,8 +43,8 @@ public class Company {
     @Column(name = "information", columnDefinition = "TEXT")
     private String information;
     
-    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean verified = false;
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus reviewStatus;
     
     @OneToOne
     @JoinColumn(name = "created_recruiter_id", nullable = true)
@@ -56,14 +60,6 @@ public class Company {
     
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Recruiter> recruiters;
-    
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<CompanyCandidate> companyCandidate;
-    
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<TemporaryRecruiter> temporaryRecruiter;
 
 }

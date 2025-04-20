@@ -4,13 +4,12 @@
  */
 package com.ttn.jobapp.Controllers;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.ttn.jobapp.Dto.CategoryDto;
 import com.ttn.jobapp.Pojo.Category;
 import com.ttn.jobapp.Repositories.CategoryRepository;
 import com.ttn.jobapp.Services.CategoryService;
-import com.ttn.jobapp.Utils.CloudinaryUtils;
+import com.ttn.jobapp.Services.SupabaseStorageService;
+import com.ttn.jobapp.Utils.GenerateUniqueFileName;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.Map;
@@ -36,12 +35,9 @@ public class CategoryController {
 
     @Autowired
     private CategoryService cs;
-    
+
     @Autowired
-    private Cloudinary cloudinary;
-    
-    @Autowired
-    private CloudinaryUtils cloudinaryUtils;
+    private SupabaseStorageService supabaseStorageService;
 
     @GetMapping
     public String category(Model model) {
@@ -68,7 +64,7 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public String createCategory(@Valid @ModelAttribute CategoryDto categoryDto, BindingResult result) throws IOException {
+    public String createCategory(@Valid @ModelAttribute CategoryDto categoryDto, BindingResult result) throws IOException, Exception {
         if (result.hasErrors()) {
             System.out.println(result.getAllErrors());
             return "admin/category/form";
@@ -80,9 +76,15 @@ public class CategoryController {
 
         Category category = new Category();
         category.setName(categoryDto.getName());
-        
-        Map res = this.cloudinary.uploader().upload(categoryDto.getImageFile().getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-        category.setIcon(res.get("secure_url").toString());
+
+        String categoryUrl = supabaseStorageService.uploadFile(
+                "category-icon",
+                GenerateUniqueFileName.generateUniqueFileName(categoryDto.getImageFile().getOriginalFilename()),
+                categoryDto.getImageFile().getInputStream(),
+                categoryDto.getImageFile().getContentType()
+        );
+
+        category.setIcon(categoryUrl);
 
         this.cs.save(category);
 
@@ -110,34 +112,25 @@ public class CategoryController {
 
     @PostMapping("/edit")
     public String updateCategory(Model model, @Valid @ModelAttribute CategoryDto categoryDto,
-            BindingResult result, @RequestParam Long id) {
+            BindingResult result, @RequestParam Long id) throws Exception {
 
-        try {
-            Category category = cr.findById(id).get();
-            model.addAttribute("category", category);
-            
-            String imageUrl = category.getIcon();
-
-            if (result.hasErrors()) {
-                return "admin/category/edit";
-            }
-
-            if (!categoryDto.getImageFile().isEmpty()) {
-                Map res = this.cloudinary.uploader().upload(categoryDto.getImageFile().getBytes(),
-                        ObjectUtils.asMap("resource_type", "auto"));
-                category.setIcon(res.get("secure_url").toString());
-                
-                String publicId = cloudinaryUtils.extractPublicIdFromUrl(imageUrl);
-                this.cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-            }
-            
-            category.setName(categoryDto.getName());
-
-            this.cs.save(category);
-
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+        Category category = cr.findById(id).get();
+        model.addAttribute("category", category);
+        if (result.hasErrors()) {
+            return "admin/category/edit";
         }
+        if (!categoryDto.getImageFile().isEmpty()) {
+            String categoryUrl = supabaseStorageService.uploadFile(
+                    "category-icon",
+                    GenerateUniqueFileName.generateUniqueFileName(categoryDto.getImageFile().getOriginalFilename()),
+                    categoryDto.getImageFile().getInputStream(),
+                    categoryDto.getImageFile().getContentType()
+            );
+            category.setIcon(categoryUrl);
+        }
+
+        category.setName(categoryDto.getName());
+        this.cs.save(category);
 
         return "redirect:/admin/category";
     }

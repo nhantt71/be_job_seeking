@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -39,9 +40,11 @@ public class JobCandidate {
     private Boolean applied = false;
 
     @Column(name = "saved_at")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime savedAt;
     
     @Column(name = "applied_at")
-    private LocalDate appliedAt;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime appliedAt;
 
 }

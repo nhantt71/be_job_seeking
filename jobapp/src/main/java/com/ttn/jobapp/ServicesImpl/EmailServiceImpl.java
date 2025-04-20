@@ -52,7 +52,7 @@ public class EmailServiceImpl implements EmailService {
         helper.setTo(to);
         helper.setFrom(from);
         helper.setSubject(subject);
-        helper.setText(body, true); // Đặt true để hỗ trợ HTML
+        helper.setText(body, true);
 
         String fileName = file.getOriginalFilename();
         helper.addAttachment(fileName, file);
@@ -65,6 +65,26 @@ public class EmailServiceImpl implements EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setFrom("tonhanlk113@gmail.com");
+        message.setSubject(subject);
+        message.setText(body);
+
+        mailSender.send(message);
+    }
+
+    @Override
+    public void sendVerifyEmail(String email, String token) {
+        String subject = "Xác minh tài khoản của bạn";
+        String verifyLink = "http://localhost:8080/api/auth/verify?token=" + token;
+
+        String body = "Xin chào,\n\n"
+                + "Cảm ơn bạn đã đăng ký tài khoản.\n"
+                + "Vui lòng nhấp vào liên kết sau để xác minh tài khoản của bạn:\n"
+                + verifyLink + "\n\n"
+                + "Trân trọng,\nHệ thống tuyển dụng thông minh.";
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("tonhanlk113@gmail.com");
+        message.setTo(email);
         message.setSubject(subject);
         message.setText(body);
 

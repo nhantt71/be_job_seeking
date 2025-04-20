@@ -51,7 +51,6 @@
                                         <th>Created Date</th>
                                         <th>Category ID</th>
                                         <th>Company ID</th>
-                                        <th>Recruiter ID</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -67,7 +66,6 @@
                                         <td th:text="${job.createdDate}"></td>
                                         <td th:text="${job.category.id}"></td>
                                         <td th:text="${job.company.id}"></td>
-                                        <td th:text="${job.recruiter.id}"></td>
                                         <td>
                                             <div style="display: flex; gap: 10px;">
                                                 <a th:href="@{/admin/job/edit(id=${job.id})}" class="btn btn-primary">Edit</a>

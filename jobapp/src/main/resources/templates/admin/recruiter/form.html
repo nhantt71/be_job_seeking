@@ -69,20 +69,6 @@
                                     <p th:if="${#fields.hasErrors('gender')}" th:errorclass="text-danger" th:errors="*{gender}"></p>
                                 </div>
                                 <div class="form-group">
-                                    <label for="companyId">Select Company</label>
-                                    <select th:field="*{companyId}" class="form-control" id="companyId">
-                                        <option value="">-- Select Company --</option>
-                                        <option th:each="company : ${companies}" th:value="${company.id}" th:text="${company.name}"></option>
-                                    </select>
-                                    <p class="text-danger" th:if="${#fields.hasErrors('companyId')}" th:errors="*{companyId}"></p>
-                                </div>
-
-                                <!-- Button to create a new account -->
-                                <div class="form-group">
-                                    <a href="/admin/account/create" class="btn btn-primary">Create New Account</a>
-                                </div>
-
-                                <div class="form-group">
                                     <label for="accountId">Select Account</label>
                                     <select th:field="*{accountId}" class="form-control" id="accountId">
                                         <option value="">-- Select Account --</option>

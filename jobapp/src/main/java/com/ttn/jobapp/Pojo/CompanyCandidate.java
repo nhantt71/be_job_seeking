@@ -31,5 +31,5 @@ public class CompanyCandidate {
     private Company company;
 
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean saved = false;
+    private Boolean saved = true;
 }

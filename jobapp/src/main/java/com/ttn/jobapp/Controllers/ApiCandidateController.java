@@ -6,11 +6,8 @@ package com.ttn.jobapp.Controllers;
 
 import com.ttn.jobapp.Dto.CandidateDto;
 import com.ttn.jobapp.Pojo.Account;
-import com.ttn.jobapp.Pojo.CV;
 import com.ttn.jobapp.Pojo.Candidate;
 import com.ttn.jobapp.Pojo.CompanyCandidate;
-import com.ttn.jobapp.Pojo.MongoExtractCV;
-import com.ttn.jobapp.Repositories.MongoExtractCVRepository;
 import com.ttn.jobapp.Services.AccountService;
 import com.ttn.jobapp.Services.CVService;
 import com.ttn.jobapp.Services.CandidateService;
@@ -18,7 +15,6 @@ import com.ttn.jobapp.Services.CompanyCandidateService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,9 +27,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 
 /**
  *
@@ -48,16 +41,14 @@ public class ApiCandidateController {
     private CandidateService cs;
 
     @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @Autowired
     private AccountService as;
 
     @Autowired
     private CVService cvs;
-    
+
     @Autowired
     private CompanyCandidateService ccs;
+    
 
     @GetMapping("/get-candidates")
     public ResponseEntity<List<Candidate>> getCandidates() {
@@ -98,8 +89,7 @@ public class ApiCandidateController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createCandidate(
-            @RequestParam Map<String, String> params,
-            @RequestBody Account account) {
+            @RequestParam Map<String, String> params) {
 
         if (!params.containsKey("phoneNumber") || params.get("phoneNumber").isEmpty()) {
             return new ResponseEntity<>("Phone number is required!", HttpStatus.BAD_REQUEST);
@@ -109,11 +99,14 @@ public class ApiCandidateController {
             return new ResponseEntity<>("Fullname is required!", HttpStatus.BAD_REQUEST);
         }
 
-        if (account == null || account.getEmail() == null || account.getEmail().isEmpty()) {
-            return new ResponseEntity<>("Account details are required!", HttpStatus.BAD_REQUEST);
+        if (!params.containsKey("accountId") || params.get("accountId").isEmpty()) {
+            return new ResponseEntity<>("Account ID is required!", HttpStatus.BAD_REQUEST);
         }
 
         Candidate candidate = new Candidate();
+        
+        Account account = this.as.getAccountById(Long.valueOf(params.get("accountId")));
+        
         candidate.setAccount(account);
         candidate.setFullname(params.get("fullname"));
         candidate.setPhoneNumber(params.get("phoneNumber"));
@@ -147,50 +140,6 @@ public class ApiCandidateController {
         candidate.setAvailable(Boolean.FALSE);
 
         return new ResponseEntity<>(this.cs.save(candidate), HttpStatus.OK);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<Long>> searchCVs(
-            @RequestParam(required = false) String gender,
-            @RequestParam(required = false) String experience,
-            @RequestParam(required = false) String skill,
-            @RequestParam(required = false) String language,
-            @RequestParam(required = false) String education,
-            @RequestParam(required = false) String certification,
-            @RequestParam(required = false) String goal) {
-
-        Query query = new Query();
-
-        if (gender != null && !gender.isEmpty()) {
-            query.addCriteria(Criteria.where("gender").is(gender));
-        }
-        if (experience != null && !experience.isEmpty()) {
-            query.addCriteria(Criteria.where("experience").regex(experience, "i"));
-        }
-        if (skill != null && !skill.isEmpty()) {
-            query.addCriteria(Criteria.where("skill").regex(skill, "i"));
-        }
-        if (language != null && !language.isEmpty()) {
-            query.addCriteria(Criteria.where("language").regex(language, "i"));
-        }
-        if (education != null && !education.isEmpty()) {
-            query.addCriteria(Criteria.where("education").regex(education, "i"));
-        }
-        if (certification != null && !certification.isEmpty()) {
-            query.addCriteria(Criteria.where("certification").regex(certification, "i"));
-        }
-        if (goal != null && !goal.isEmpty()) {
-            query.addCriteria(Criteria.where("goal").regex(goal, "i"));
-        }
-
-        List<MongoExtractCV> cvs = mongoTemplate.find(query, MongoExtractCV.class);
-
-        List<Long> candidateIds = cvs.stream()
-                .map(MongoExtractCV::getCandidateId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(candidateIds, HttpStatus.OK);
     }
 
     @GetMapping("/get-available-candidates")
@@ -244,10 +193,9 @@ public class ApiCandidateController {
         return new ResponseEntity<>(cands, HttpStatus.OK);
     }
 
-    
     @GetMapping("/get-saved-candidates/{companyId}")
     public ResponseEntity<List<CandidateDto>> getSavedCandidates(
-            @PathVariable("companyId") Long companyId){
+            @PathVariable("companyId") Long companyId) {
         List<CompanyCandidate> companyCandidate = this.ccs.getSavedCandidateByCompany(companyId);
         List<CandidateDto> savedCandidateDto = companyCandidate.stream().map(x -> {
             CandidateDto cDto = new CandidateDto();
@@ -263,7 +211,7 @@ public class ApiCandidateController {
             cDto.setFileCV(fileCV);
             return cDto;
         }).collect(Collectors.toList());
-        
+
         return new ResponseEntity<>(savedCandidateDto, HttpStatus.OK);
     }
 }

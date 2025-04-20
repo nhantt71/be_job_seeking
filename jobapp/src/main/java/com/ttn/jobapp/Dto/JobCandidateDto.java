@@ -4,7 +4,6 @@
  */
 package com.ttn.jobapp.Dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Data;
 
@@ -25,5 +24,5 @@ public class JobCandidateDto {
     
     private LocalDateTime savedAt;
     
-    private LocalDate appliedAt;
+    private LocalDateTime appliedAt;
 }

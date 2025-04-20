@@ -5,6 +5,7 @@
 package com.ttn.jobapp.Controllers;
 
 import com.ttn.jobapp.Dto.CandidateDto;
+import com.ttn.jobapp.Pojo.Account;
 import com.ttn.jobapp.Pojo.Candidate;
 import com.ttn.jobapp.Repositories.CandidateRepository;
 import com.ttn.jobapp.Services.AccountService;
@@ -56,10 +57,12 @@ public class CandidateController {
     @GetMapping("/delete")
     public String deleteCandidate(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
         try {
+            Account account = this.as.getAccountById(this.cs.getCandidateById(id).getAccount().getId());
+            this.as.delete(account.getId());
             this.cs.delete(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Address deleted successfully!");
+            redirectAttributes.addFlashAttribute("successMessage", "Candidate deleted successfully!");
         } catch (DataIntegrityViolationException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Cannot delete this address because it is associated with a company.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Something's wrong!");
         }
         return "redirect:/admin/candidate";
     }

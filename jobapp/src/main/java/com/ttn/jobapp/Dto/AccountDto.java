@@ -4,6 +4,7 @@
  */
 package com.ttn.jobapp.Dto;
 
+import com.ttn.jobapp.Utils.Role;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -26,6 +27,9 @@ public class AccountDto {
     
     @NotNull(message = "Role cannot null")
     private String role;
+    
+    private Boolean verified;
+    
 
     private MultipartFile imageFile;
 }

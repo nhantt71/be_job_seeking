@@ -4,17 +4,17 @@
  */
 package com.ttn.jobapp.Controllers;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.ttn.jobapp.Dto.CVDto;
 import com.ttn.jobapp.Pojo.CV;
 import com.ttn.jobapp.Repositories.CVRepository;
 import com.ttn.jobapp.Services.CVService;
 import com.ttn.jobapp.Services.CandidateService;
-import com.ttn.jobapp.Utils.CloudinaryUtils;
+import com.ttn.jobapp.Services.SupabaseStorageService;
+import com.ttn.jobapp.Utils.GenerateUniqueFileName;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,10 +44,7 @@ public class CVController {
     private CandidateService candidateService;
 
     @Autowired
-    private Cloudinary cloudinary;
-
-    @Autowired
-    private CloudinaryUtils cloudinaryUtils;
+    private SupabaseStorageService supabaseStorageService;
 
     @GetMapping
     public String cv(Model model) {
@@ -70,7 +67,7 @@ public class CVController {
     }
 
     @PostMapping("/create")
-    public String createCv(@Valid @ModelAttribute CVDto cvDto, BindingResult result) throws IOException {
+    public String createCv(@Valid @ModelAttribute CVDto cvDto, BindingResult result) throws IOException, Exception {
         if (result.hasErrors()) {
             return "admin/cv/form";
         }
@@ -88,11 +85,16 @@ public class CVController {
             });
         }
         cv.setName(cvDto.getName());
-        cv.setUpdatedDate(cvDto.getUpdateDate());
+        cv.setUpdatedDate(LocalDateTime.now());
         cv.setCandidate(this.candidateService.getCandidateById(cvDto.getCandidateId()));
 
-        Map res = this.cloudinary.uploader().upload(cvDto.getImageFile().getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-        cv.setFileCV(res.get("secure_url").toString());
+        String cvUrl = supabaseStorageService.uploadFile(
+                "cv",
+                GenerateUniqueFileName.generateUniqueFileName(cvDto.getImageFile().getOriginalFilename()),
+                cvDto.getImageFile().getInputStream(),
+                cvDto.getImageFile().getContentType()
+        );
+        cv.setFileCV(cvUrl);
 
         this.cs.save(cv);
 
@@ -107,10 +109,11 @@ public class CVController {
 
             CVDto cvDto = new CVDto();
             cvDto.setMainCV(cv.getMainCV());
-            cvDto.setUpdateDate(cv.getUpdatedDate());
+            cvDto.setUpdatedDate(cv.getUpdatedDate());
             cvDto.setName(cv.getName());
 
             model.addAttribute("cvDto", cvDto);
+            model.addAttribute("formattedUpdatedDate", cv.getUpdatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -122,43 +125,36 @@ public class CVController {
 
     @PostMapping("/edit")
     public String updateCV(Model model, @Valid @ModelAttribute CVDto cvDto,
-            BindingResult result, @RequestParam Long id) throws IOException {
+            BindingResult result, @RequestParam Long id) throws IOException, Exception {
 
-        try {
-            CV cv = cr.findById(id).get();
-            model.addAttribute("cv", cv);
-
-            String imageUrl = cv.getFileCV();
-
-            if (result.hasErrors()) {
-                return "admin/cv/edit";
-            }
-
-            if (!cvDto.getImageFile().isEmpty()) {
-                Map res = this.cloudinary.uploader().upload(cvDto.getImageFile().getBytes(),
-                        ObjectUtils.asMap("resource_type", "auto"));
-                cv.setFileCV(res.get("secure_url").toString());
-
-                String publicId = cloudinaryUtils.extractPublicIdFromUrl(imageUrl);
-                this.cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-            }
-
-            cv.setName(cvDto.getName());
-            cv.setUpdatedDate(cvDto.getUpdateDate());
-            cv.setMainCV(cvDto.isMainCV());
-
-            if (cvDto.isMainCV()) {
-                this.cs.getCVsByCandidateId(cvDto.getCandidateId()).forEach(x -> {
-                    x.setMainCV(Boolean.FALSE);
-                    this.cs.save(x);
-                });
-            }
-
-            this.cs.save(cv);
-
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+        CV cv = cr.findById(id).get();
+        model.addAttribute("cv", cv);
+        String imageUrl = cv.getFileCV();
+        if (result.hasErrors()) {
+            return "admin/cv/edit";
         }
+        if (!cvDto.getImageFile().isEmpty()) {
+
+            String cvUrl = supabaseStorageService.uploadFile(
+                    "cv",
+                    GenerateUniqueFileName.generateUniqueFileName(cvDto.getImageFile().getOriginalFilename()),
+                    cvDto.getImageFile().getInputStream(),
+                    cvDto.getImageFile().getContentType()
+            );
+
+            cv.setFileCV(cvUrl);
+        }
+
+        cv.setName(cvDto.getName());
+        cv.setUpdatedDate(cvDto.getUpdatedDate());
+        cv.setMainCV(cvDto.isMainCV());
+        if (cvDto.isMainCV()) {
+            this.cs.getCVsByCandidateId(cvDto.getCandidateId()).forEach(x -> {
+                x.setMainCV(Boolean.FALSE);
+                this.cs.save(x);
+            });
+        }
+        this.cs.save(cv);
 
         return "redirect:/admin/cv";
     }

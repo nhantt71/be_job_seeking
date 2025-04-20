@@ -26,6 +26,4 @@ public interface JobCandidateService {
     List<JobCandidate> getAppliedJobs(Long candidateId);
     
     List<JobCandidate> getSavedJobs(Long candidateId);
-    
-    
 }

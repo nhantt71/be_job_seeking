@@ -1,6 +1,6 @@
 package com.ttn.jobapp.Dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +17,7 @@ public class CVDto {
 
     private String name;
 
-    private LocalDate updateDate;
+    private LocalDateTime updatedDate;
 
     private Long candidateId;
     
@@ -25,4 +25,5 @@ public class CVDto {
     
     private MultipartFile imageFile;
 
+   
 }

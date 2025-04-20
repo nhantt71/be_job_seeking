@@ -5,7 +5,6 @@
 package com.ttn.jobapp.Repositories;
 
 import com.ttn.jobapp.Pojo.Recruiter;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,9 +22,4 @@ public interface RecruiterRepository extends JpaRepository<Recruiter, Long> {
     @Query("SELECT r FROM Recruiter r WHERE r.account.email LIKE :email")
     Recruiter getRecruiterByEmail(@Param("email") String email);
 
-    @Query("SELECT r FROM Recruiter r WHERE r.company.id IS NULL")
-    List<Recruiter> findRecruitersWithoutCompanyId();
-    
-    @Query("SELECT r FROM Recruiter r WHERE r.company.id = :companyId")
-    List<Recruiter> getRecruitersByCompany(@Param("companyId") Long companyId);
 }

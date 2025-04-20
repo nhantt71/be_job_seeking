@@ -23,9 +23,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>{
     @Query("SELECT c FROM Company c WHERE LOWER(c.name) LIKE %:keyword%")
     List<Company> getFindingCompanies(@Param("keyword") String keyword);
     
-    @Query("SELECT c FROM Company c " +
-           "LEFT JOIN VerificationToken vt ON c.id = vt.company.id " +
-           "WHERE c.verified = false AND vt.company.id IS NULL")
-    List<Company> findUnverifiedCompaniesWithoutToken();
+    @Query("SELECT c FROM Company c WHERE c.recruiter.id = :recruiterId")
+    Company getCompanyByRecruiterId(@Param("recruiterId") Long recruiterId);
     
 }

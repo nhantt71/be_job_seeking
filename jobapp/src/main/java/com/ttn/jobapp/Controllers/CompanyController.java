@@ -4,8 +4,6 @@
  */
 package com.ttn.jobapp.Controllers;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.ttn.jobapp.Dto.CompanyDto;
 import com.ttn.jobapp.Pojo.Company;
 import com.ttn.jobapp.Repositories.AddressRepository;
@@ -13,10 +11,11 @@ import com.ttn.jobapp.Repositories.CompanyRepository;
 import com.ttn.jobapp.Repositories.RecruiterRepository;
 import com.ttn.jobapp.Services.AddressService;
 import com.ttn.jobapp.Services.CompanyService;
-import com.ttn.jobapp.Utils.CloudinaryUtils;
+import com.ttn.jobapp.Services.SupabaseStorageService;
+import com.ttn.jobapp.Utils.GenerateUniqueFileName;
+import com.ttn.jobapp.Utils.ReviewStatus;
 import jakarta.validation.Valid;
 import java.io.IOException;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -54,10 +53,7 @@ public class CompanyController {
     private RecruiterRepository rr;
 
     @Autowired
-    private Cloudinary cloudinary;
-
-    @Autowired
-    private CloudinaryUtils cloudinaryUtils;
+    private SupabaseStorageService supabaseStorageService;
 
     @GetMapping
     public String company(Model model) {
@@ -86,7 +82,7 @@ public class CompanyController {
     }
 
     @PostMapping("/create")
-    public String createCompany(@Valid @ModelAttribute CompanyDto companyDto, BindingResult result) throws IOException {
+    public String createCompany(@Valid @ModelAttribute CompanyDto companyDto, BindingResult result) throws IOException, Exception {
         if (result.hasErrors()) {
             System.out.println(result.getAllErrors());
             return "admin/company/form";
@@ -98,16 +94,24 @@ public class CompanyController {
 
         Company company = new Company();
         company.setEmail(companyDto.getEmail());
+        company.setTaxCode(companyDto.getTaxCode());
         company.setInformation(companyDto.getInformation());
         company.setName(companyDto.getName());
         company.setPhoneNumber(companyDto.getPhoneNumber());
         company.setWebsite(companyDto.getWebsite());
-        company.setVerified(companyDto.getVerified());
+        company.setReviewStatus(ReviewStatus.valueOf(companyDto.getReviewStatus().toUpperCase()));
         company.setAddress(this.ar.findById(companyDto.getAddressId()).get());
-        company.setRecruiter(this.rr.findById(companyDto.getCreatedRecruiterId()).get());
+        if (companyDto.getCreatedRecruiterId() != null) {
+            company.setRecruiter(this.rr.findById(companyDto.getCreatedRecruiterId()).get());
+        }
 
-        Map res = this.cloudinary.uploader().upload(companyDto.getImageFile().getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-        company.setLogo(res.get("secure_url").toString());
+        String companyUrl = supabaseStorageService.uploadFile(
+                "company-logo",
+                GenerateUniqueFileName.generateUniqueFileName(companyDto.getImageFile().getOriginalFilename()),
+                companyDto.getImageFile().getInputStream(),
+                companyDto.getImageFile().getContentType()
+        );
+        company.setLogo(companyUrl);
 
         this.cs.save(company);
 
@@ -125,9 +129,10 @@ public class CompanyController {
             companyDto.setEmail(company.getEmail());
             companyDto.setInformation(company.getInformation());
             companyDto.setName(company.getName());
+            companyDto.setTaxCode(company.getTaxCode());
             companyDto.setPhoneNumber(company.getPhoneNumber());
             companyDto.setWebsite(company.getWebsite());
-            companyDto.setVerified(company.isVerified());
+            companyDto.setReviewStatus(company.getReviewStatus().name());
 
             model.addAttribute("companyDto", companyDto);
 
@@ -141,25 +146,14 @@ public class CompanyController {
 
     @PostMapping("/edit")
     public String updateCompany(Model model, @Valid @ModelAttribute CompanyDto companyDto,
-            BindingResult result, @RequestParam Long id) throws IOException {
+            BindingResult result, @RequestParam Long id) throws IOException, Exception {
 
         Company company = cr.findById(id).get();
 
         model.addAttribute("company", company);
 
-        String imageUrl = company.getLogo();
-
         if (result.hasErrors()) {
             return "admin/company/edit";
-        }
-
-        if (!companyDto.getImageFile().isEmpty()) {
-            Map res = this.cloudinary.uploader().upload(companyDto.getImageFile().getBytes(),
-                    ObjectUtils.asMap("resource_type", "auto"));
-            company.setLogo(res.get("secure_url").toString());
-
-            String publicId = cloudinaryUtils.extractPublicIdFromUrl(imageUrl);
-            this.cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
         }
 
         if (companyDto.getAddressId() == null) {
@@ -171,10 +165,21 @@ public class CompanyController {
         company.setEmail(companyDto.getEmail());
         company.setInformation(companyDto.getInformation());
         company.setName(companyDto.getName());
+        company.setTaxCode(companyDto.getTaxCode());
         company.setPhoneNumber(companyDto.getPhoneNumber());
         company.setWebsite(companyDto.getWebsite());
-        company.setVerified(companyDto.getVerified());
+        company.setReviewStatus(ReviewStatus.valueOf(companyDto.getReviewStatus().toUpperCase()));
         company.setRecruiter(this.rr.findById(companyDto.getCreatedRecruiterId()).get());
+
+        if (!companyDto.getImageFile().isEmpty()) {
+            String companyUrl = supabaseStorageService.uploadFile(
+                    "company-logo",
+                    GenerateUniqueFileName.generateUniqueFileName(companyDto.getImageFile().getOriginalFilename()),
+                    companyDto.getImageFile().getInputStream(),
+                    companyDto.getImageFile().getContentType()
+            );
+            company.setLogo(companyUrl);
+        }
 
         this.cs.save(company);
 

@@ -4,9 +4,7 @@
  */
 package com.ttn.jobapp.Repositories;
 
-import com.ttn.jobapp.Dto.JobStatisticsProjection;
 import com.ttn.jobapp.Pojo.JobCandidate;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 @Table(name = "candidate")
 public class Candidate {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +23,7 @@ public class Candidate {
     private Boolean available = false;
     
     @OneToOne
-    @JoinColumn(name = "account_id", unique = true)
+    @JoinColumn(name = "account_id", unique = true, nullable = true)
     private Account account;
     
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
