@@ -4,6 +4,7 @@
  */
 package com.ttn.jobapp.Services;
 
+import com.ttn.jobapp.Pojo.Company;
 import jakarta.mail.MessagingException;
 import java.io.IOException;
 import org.springframework.core.io.ByteArrayResource;
@@ -22,4 +23,8 @@ public interface EmailService {
     void sendSimpleEmail(String to, String subject, String body);
     
     void sendVerifyEmail(String email, String token);
+    
+    void sendCompanyApprovalEmail(Company company);
+    
+    void sendCompanyRejectionEmail(Company company);
 }

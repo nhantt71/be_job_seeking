@@ -51,6 +51,7 @@
                                         <th>Address</th>
                                         <th>Created By</th>
                                         <th>Review Status</th>
+                                        <th>Created Date</th>
                                         <th>Logo</th>
                                         <th>Action</th>
                                     </tr>
@@ -66,6 +67,7 @@
                                         <td th:text="${company.website}"></td>
                                         <td th:text="${company.address.id}"></td>
                                         <td th:text="${company.recruiter.id}"></td>
+                                        <td th:text="${company.createdDate}"></td>
                                         <td th:text="${company.reviewStatus}"></td>
                                         <td>
                                             <img th:src="@{${company.logo}}" alt="Logo" width="50" height="50"/>

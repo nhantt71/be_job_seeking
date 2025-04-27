@@ -23,4 +23,10 @@ public interface CompanyService {
     List<Company> getFindingCompanies(String keyword);
     
     Company getCompanyByRecruiterId(Long recruiterId);
+    
+    void cleanupUnverifiedCompanies();
+    
+    List<Company> findByPendingVerifiedAccount();
+    
+    Company processApproval(Long companyId, String action);
 }

@@ -4,18 +4,12 @@
  */
 package com.ttn.jobapp.Services;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
  *
  * @author PC
  */
-public interface SupabaseStorageService {
-
-    String uploadFile(String bucket, String filename, InputStream fileInputStream,
-            String contentType) throws Exception;
-
-    InputStream downloadFile(String bucket, String filePath) throws IOException;
-
+public interface TikaOcrService {
+    String extractText(InputStream stream) throws Exception;
 }

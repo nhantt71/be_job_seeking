@@ -4,10 +4,13 @@
  */
 package com.ttn.jobapp.ServicesImpl;
 
+import com.ttn.jobapp.Pojo.Company;
 import com.ttn.jobapp.Services.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
@@ -15,6 +18,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 /**
  *
@@ -25,6 +30,9 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private TemplateEngine templateEngine;
 
     @Override
     public void sendEmailWithAttachment(String to, String from, String subject,
@@ -87,6 +95,48 @@ public class EmailServiceImpl implements EmailService {
         message.setTo(email);
         message.setSubject(subject);
         message.setText(body);
+
+        mailSender.send(message);
+    }
+
+    @Override
+    public void sendCompanyApprovalEmail(Company company) {
+        Context context = new Context();
+        context.setVariable("company", company);
+
+        String content = templateEngine.process("email/company-approved", context);
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        try {
+            helper.setTo(company.getEmail());
+            helper.setSubject("Your Company Has Been Approved");
+            helper.setText(content, true);
+        } catch (MessagingException ex) {
+            Logger.getLogger(EmailServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        mailSender.send(message);
+    }
+
+    @Override
+    public void sendCompanyRejectionEmail(Company company) {
+                Context context = new Context();
+        context.setVariable("company", company);
+
+        String content = templateEngine.process("email/company-rejected", context);
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        try {
+            helper.setTo(company.getEmail());
+            helper.setSubject("Your Company Has Been Rejected");
+            helper.setText(content, true);
+        } catch (MessagingException ex) {
+            Logger.getLogger(EmailServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         mailSender.send(message);
     }

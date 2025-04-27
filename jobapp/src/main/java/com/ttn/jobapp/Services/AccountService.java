@@ -18,8 +18,10 @@ public interface AccountService{
 
     void delete(Long id);
     
-    List<Account> getUnattachAccounts();
+    List<Account> getUnattachRecruiterAccounts();
     
+    List<Account> getUnattachCandidateAccounts();
+
     Account getAccountById(Long id);
     
     User getCurrentUser();
@@ -34,4 +36,6 @@ public interface AccountService{
     
     Boolean checkVerified(String email);
     
+    Optional<Account> findAdminByEmail(String email);
+
 }

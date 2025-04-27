@@ -8,6 +8,7 @@ import com.ttn.jobapp.Pojo.*;
 import com.ttn.jobapp.Repositories.*;
 import com.ttn.jobapp.Services.AccountService;
 import com.ttn.jobapp.Services.CustomUserDetailsService;
+import com.ttn.jobapp.Utils.Role;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,8 +54,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> getUnattachAccounts() {
-        List<Recruiter> allRecruiters = recruiterRepo.findAll();
+    public List<Account> getUnattachCandidateAccounts() {
         List<Candidate> allCandidates = candidateRepo.findAll();
         List<Account> allAccounts = ar.findAll();
 
@@ -66,6 +66,23 @@ public class AccountServiceImpl implements AccountService {
             }
         });
 
+        List<Account> unattachAccounts = allAccounts.stream()
+                .filter(account
+                        -> !accountIds.contains(account.getId())
+                && account.getRole() == Role.CANDIDATE
+                )
+                .collect(Collectors.toList());
+
+        return unattachAccounts;
+    }
+
+    @Override
+    public List<Account> getUnattachRecruiterAccounts() {
+        List<Recruiter> allRecruiters = recruiterRepo.findAll();
+        List<Account> allAccounts = ar.findAll();
+
+        List<Long> accountIds = new ArrayList<>();
+
         allRecruiters.forEach(x -> {
             if (x.getAccount() != null) {
                 accountIds.add(x.getAccount().getId());
@@ -73,7 +90,10 @@ public class AccountServiceImpl implements AccountService {
         });
 
         List<Account> unattachAccounts = allAccounts.stream()
-                .filter(account -> !accountIds.contains(account.getId()))
+                .filter(account
+                        -> !accountIds.contains(account.getId())
+                && account.getRole() == Role.RECRUITER
+                )
                 .collect(Collectors.toList());
 
         return unattachAccounts;
@@ -117,8 +137,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Boolean checkVerified(String email) {
         Account a = this.ar.findByEmail(email).get();
-        
+
         return a.getVerified();
+    }
+
+    @Override
+    public Optional<Account> findAdminByEmail(String email) {
+         return this.ar.findAdminByEmail(email);
     }
 
 }

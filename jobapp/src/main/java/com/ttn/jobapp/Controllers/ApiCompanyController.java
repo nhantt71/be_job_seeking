@@ -10,6 +10,8 @@ import com.ttn.jobapp.Pojo.Company;
 import com.ttn.jobapp.Services.AddressService;
 import com.ttn.jobapp.Services.CompanyService;
 import com.ttn.jobapp.Services.RecruiterService;
+import com.ttn.jobapp.Services.SupabaseStorageService;
+import com.ttn.jobapp.Utils.GenerateUniqueFileName;
 import com.ttn.jobapp.Utils.ReviewStatus;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -20,6 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -56,6 +59,9 @@ public class ApiCompanyController {
     @Autowired
     private AddressService as;
 
+    @Autowired
+    private SupabaseStorageService supabaseStorageService;
+
     @GetMapping
     public ResponseEntity<List<CompanyDto>> allCompanies() {
         List<Company> companies = this.cs.getCompanies();
@@ -73,9 +79,9 @@ public class ApiCompanyController {
                 c.setInformation(x.getInformation());
                 c.setPhoneNumber(x.getPhoneNumber());
                 c.setWebsite(x.getWebsite());
-//                c.setAddressDetail(x.getAddress().getDetail());
-//                c.setCity(x.getAddress().getCity());
-//                c.setProvince(x.getAddress().getProvince());
+                c.setAddressDetail(x.getAddress().getDetail());
+                c.setCity(x.getAddress().getCity());
+                c.setProvince(x.getAddress().getProvince());
                 c.setJobAmount(this.cs.jobAmount(x));
 
                 comDto.add(c);
@@ -98,9 +104,9 @@ public class ApiCompanyController {
         comDto.setName(com.getName());
         comDto.setPhoneNumber(com.getPhoneNumber());
         comDto.setWebsite(com.getWebsite());
-//        comDto.setAddressDetail(com.getAddress().getDetail());
-//        comDto.setCity(com.getAddress().getCity());
-//        comDto.setProvince(com.getAddress().getProvince());
+        comDto.setAddressDetail(com.getAddress().getDetail());
+        comDto.setCity(com.getAddress().getCity());
+        comDto.setProvince(com.getAddress().getProvince());
         comDto.setCreatedRecruiterId(com.getRecruiter().getId());
 
         return new ResponseEntity<>(comDto, HttpStatus.OK);
@@ -130,9 +136,9 @@ public class ApiCompanyController {
                         c.setInformation(x.getInformation());
                         c.setPhoneNumber(x.getPhoneNumber());
                         c.setWebsite(x.getWebsite());
-//                        c.setAddressDetail(x.getAddress().getDetail());
-//                        c.setCity(x.getAddress().getCity());
-//                        c.setProvince(x.getAddress().getProvince());
+                        c.setAddressDetail(x.getAddress().getDetail());
+                        c.setCity(x.getAddress().getCity());
+                        c.setProvince(x.getAddress().getProvince());
                         c.setJobAmount(this.cs.jobAmount(x));
                         return c;
                     }).collect(Collectors.toList());
@@ -146,7 +152,7 @@ public class ApiCompanyController {
     public ResponseEntity<?> createCompany(
             @RequestParam Map<String, String> params,
             @RequestPart MultipartFile file,
-            @RequestBody Address address) {
+            @RequestBody Address address) throws Exception {
 
         if (!params.containsKey("email") || params.get("email").isEmpty()) {
             return new ResponseEntity<>("Email is required!", HttpStatus.BAD_REQUEST);
@@ -168,6 +174,10 @@ public class ApiCompanyController {
             return new ResponseEntity<>("Phone number is required!", HttpStatus.BAD_REQUEST);
         }
 
+        if (!params.containsKey("recruiterId") || params.get("recruiterId").isEmpty()){
+            return new ResponseEntity<>("Recruiter ID is required!", HttpStatus.BAD_REQUEST);
+        }
+        
         if (address == null) {
             return new ResponseEntity<>("Address are required!", HttpStatus.BAD_REQUEST);
         }
@@ -176,76 +186,38 @@ public class ApiCompanyController {
             return new ResponseEntity<>("Image file is required!", HttpStatus.BAD_REQUEST);
         }
 
+
         Company company = new Company();
-//        company.setAddress(address);
+        company.setAddress(address);
         company.setEmail(params.get("email"));
         company.setInformation(params.get("information"));
         company.setName(params.get("name"));
         company.setPhoneNumber(params.get("phoneNumber"));
         company.setWebsite(params.get("website"));
+        company.setTaxCode(params.get("taxCode"));
         company.setReviewStatus(ReviewStatus.PENDING);
-//
-//        try {
-//            Map<?, ?> res = this.cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
-//            company.setLogo(res.get("secure_url").toString());
-//        } catch (IOException e) {
-//            return new ResponseEntity<>("Failed to upload image.", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
+        company.setRecruiter(this.rs.getRecruiterById(Long.valueOf(params.get("recruiterId"))));
+
+        try {
+            String logo = supabaseStorageService.uploadFile(
+                    "company-logo",
+                    GenerateUniqueFileName.generateUniqueFileName(file.getOriginalFilename()),
+                    file.getInputStream(),
+                    file.getContentType()
+            );
+            company.setLogo(logo);
+        } catch (IOException e) {
+            return new ResponseEntity<>("Failed to upload logo.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         Company savedCompany = this.cs.save(company);
-
-        String token = UUID.randomUUID().toString();
-
-//        VerificationToken verificationToken = new VerificationToken();
-//        verificationToken.setToken(token);
-//        verificationToken.setCompany(savedCompany);
-//        verificationTokenRepository.save(verificationToken);
-
-        sendVerificationEmail(params.get("email"), token);
 
         try {
             return new ResponseEntity<>(savedCompany, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred while creating the candidate.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("An error occurred while creating the company.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    private void sendVerificationEmail(String email, String token) {
-        String subject = "Verify your company registration";
-        String verificationUrl = "http://localhost:8080/api/company/verify?token=" + token;
-        String message = "Please click the link below to verify your company registration:\n" + verificationUrl;
-
-        try {
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-            helper.setTo(email);
-            helper.setSubject(subject);
-            helper.setText(message, true);
-
-            mailSender.send(mimeMessage);
-        } catch (MessagingException e) {
-        }
-    }
-//
-//    @GetMapping("/verify")
-//    public ResponseEntity<String> verifyCompany(@RequestParam("token") String token) {
-//        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
-//
-//        if (verificationToken == null) {
-//            return new ResponseEntity<>("Invalid token", HttpStatus.BAD_REQUEST);
-//        }
-//
-//        Company company = verificationToken.getCompany();
-//        company.setVerified(true);
-//        Recruiter recruiter = company.getRecruiter();
-//        recruiter.setCompany(company);
-//        rs.save(recruiter);
-//        cs.save(company);
-//
-//        verificationTokenRepository.delete(verificationToken);
-//
-//        return new ResponseEntity<>("Company successfully verified!", HttpStatus.OK);
-//    }
 
     @PostMapping("/edit/{id}")
     public ResponseEntity<CompanyDto> editCompany(@RequestParam Map<String, String> params,
@@ -271,20 +243,22 @@ public class ApiCompanyController {
         if (params.get("website") != null) {
             com.setWebsite(params.get("website"));
         }
+        if (params.get("taxCode") != null) {
+            com.setTaxCode(params.get("taxCode"));
+        }
 
-//        Address address = com.getAddress();
-//        if (address != null) {
-//            if (params.get("city") != null) {
-//                address.setCity(params.get("city"));
-//            }
-//            if (params.get("detail") != null) {
-//                address.setDetail(params.get("detail"));
-//            }
-//            if (params.get("province") != null) {
-//                address.setProvince(params.get("province"));
-//            }
-//        }
-
+        Address address = com.getAddress();
+        if (address != null) {
+            if (params.get("city") != null) {
+                address.setCity(params.get("city"));
+            }
+            if (params.get("detail") != null) {
+                address.setDetail(params.get("detail"));
+            }
+            if (params.get("province") != null) {
+                address.setProvince(params.get("province"));
+            }
+        }
         Company savedCompany = cs.save(com);
 
         CompanyDto comDto = new CompanyDto();
@@ -296,12 +270,11 @@ public class ApiCompanyController {
         comDto.setPhoneNumber(savedCompany.getPhoneNumber());
         comDto.setWebsite(savedCompany.getWebsite());
 
-//        if (savedCompany.getAddress() != null) {
-//            comDto.setAddressDetail(savedCompany.getAddress().getDetail());
-//            comDto.setCity(savedCompany.getAddress().getCity());
-//            comDto.setProvince(savedCompany.getAddress().getProvince());
-//        }
-
+        if (savedCompany.getAddress() != null) {
+            comDto.setAddressDetail(savedCompany.getAddress().getDetail());
+            comDto.setCity(savedCompany.getAddress().getCity());
+            comDto.setProvince(savedCompany.getAddress().getProvince());
+        }
         if (savedCompany.getRecruiter() != null) {
             comDto.setCreatedRecruiterId(savedCompany.getRecruiter().getId());
         }

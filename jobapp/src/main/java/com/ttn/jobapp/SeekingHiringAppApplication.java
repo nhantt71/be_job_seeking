@@ -5,6 +5,9 @@ import com.ttn.jobapp.Security.JwtTokenProvider;
 import com.ttn.jobapp.Services.AccountService;
 import com.ttn.jobapp.Utils.AuthProvider;
 import com.ttn.jobapp.Utils.Role;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.parser.Parser;
+import org.apache.tika.parser.ocr.TesseractOCRConfig;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -55,7 +58,19 @@ public class SeekingHiringAppApplication {
     }
 
     @Bean
-    public JwtTokenProvider jwtTokenProvider(){
+    public JwtTokenProvider jwtTokenProvider() {
         return new JwtTokenProvider();
+    }
+
+    @Bean
+    public Parser tikaParser() {
+        return new AutoDetectParser();
+    }
+
+    @Bean
+    public TesseractOCRConfig tesseractOCRConfig() {
+        TesseractOCRConfig config = new TesseractOCRConfig();
+        config.setPreserveInterwordSpacing(true);
+        return config;
     }
 }

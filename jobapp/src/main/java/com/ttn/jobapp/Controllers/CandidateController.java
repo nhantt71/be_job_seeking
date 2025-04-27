@@ -50,7 +50,7 @@ public class CandidateController {
     public String showCreatePage(Model model) {
         CandidateDto candidateDto = new CandidateDto();
         model.addAttribute("candidateDto", candidateDto);
-        model.addAttribute("accounts", this.as.getUnattachAccounts());
+        model.addAttribute("accounts", this.as.getUnattachCandidateAccounts());
         return "admin/candidate/form";
     }
 

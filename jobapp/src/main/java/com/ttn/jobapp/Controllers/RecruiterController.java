@@ -65,7 +65,7 @@ public class RecruiterController {
     public String showCreatePage(Model model) {
         RecruiterDto recruiterDto = new RecruiterDto();
         List<Company> companies = cs.getCompanies();
-        List<Account> accounts = as.getUnattachAccounts();
+        List<Account> accounts = as.getUnattachRecruiterAccounts();
         model.addAttribute("recruiterDto", recruiterDto);
         model.addAttribute("companies", companies);
         model.addAttribute("accounts", accounts);

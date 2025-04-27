@@ -1,123 +1,128 @@
-  <aside class="main-sidebar" th:fragment="sidebar">
+<aside class="main-sidebar" th:fragment="sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-      <!-- Sidebar user panel -->
-      <div class="user-panel">
-        <div class="pull-left image">
-          <img th:src="@{/assets/images/user2-160x160.jpg}" class="img-circle" alt="User Image">
+        <!-- Sidebar user panel -->
+        <div class="user-panel">
+            <div class="pull-left image">
+                <img th:src="@{/assets/images/user2-160x160.jpg}" class="img-circle" alt="User Image">
+            </div>
+            <div class="pull-left info">
+                <p>Alexander Pierce</p>
+                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
         </div>
-        <div class="pull-left info">
-          <p>Alexander Pierce</p>
-          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-        </div>
-      </div>
 
-      <!-- sidebar menu: : style can be found in sidebar.less -->
+        <!-- sidebar menu: : style can be found in sidebar.less -->
 
-      <ul class="sidebar-menu" data-widget="tree">
+        <ul class="sidebar-menu" data-widget="tree">
 
-        <li>
-          <a href="/admin/account">
-            <i class="fa fa-th"></i> <span>Account Management </span>
-            <span class="pull-right-container">
-            </span>
-          </a>
-        </li>
-        
-        <li>
-          <a href="/admin/job">
-            <i class="fa fa-th"></i> <span>Job Management </span>
-            <span class="pull-right-container">
-            </span>
-          </a>
-        </li>
-        
-        <li>
-          <a href="/admin/candidate">
-              <i class="fa fa-th"></i> <span>Candidate Management </span>
-            <span class="pull-right-container">
-            </span>
-          </a>
-        </li>
-        
-        <li>
-          <a href="/admin/recruiter">
-            <i class="fa fa-th"></i> <span>Recruiter Management </span>
-            <span class="pull-right-container">
-            </span>
-          </a>
-        </li>
-        
-        <li>
-          <a href="/admin/address">
-            <i class="fa fa-th"></i> <span>Address Management </span>
-            <span class="pull-right-container">
-            </span>
-          </a>
-        </li>
-        
-        <li>
-          <a href="/admin/cv">
-            <i class="fa fa-th"></i> <span>CV Management </span>
-            <span class="pull-right-container">
-            </span>
-          </a>
-        </li>
-        
-        <li>
-          <a href="/admin/category">
-            <i class="fa fa-th"></i> <span>Category Management </span>
-            <span class="pull-right-container">
-            </span>
-          </a>
-        </li>
-        
-        <li>
-          <a href="/admin/company">
-            <i class="fa fa-th"></i> <span>Company Management </span>
-            <span class="pull-right-container">
-            </span>
-          </a>
-        </li>
-        
-        <li>
-          <a href="/admin/company-candidate">
-            <i class="fa fa-th"></i> <span>Company Candidate Management </span>
-            <span class="pull-right-container">
-            </span>
-          </a>
-        </li>
-        
-        <li>
-          <a href="/admin/job-candidate">
-            <i class="fa fa-th"></i> <span>Job Candidate Management </span>
-            <span class="pull-right-container">
-            </span>
-          </a>
-        </li>
+            <li>
+                <a href="/admin/account">
+                    <i class="fa fa-th"></i> <span>Account Management </span>
+                    <span class="pull-right-container">
+                    </span>
+                </a>
+            </li>
 
-        <li class="treeview">   
-          <a href="#">
-            <i class="fa fa-dashboard"></i> <span>Banner Management</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="/admin/statistics"><i class="fa fa-circle-o"></i> Statistics/Reports</a></li>
-          </ul>
-        </li>
-        
-        <li>
-          <a href="">
-            <i class="fa fa-th"></i> <span>Widgets</span>
-            <span class="pull-right-container">
-              <small class="label pull-right bg-green">Coming soon</small>
-            </span>
-          </a>
-        </li>
-        
-      </ul>
+            <li>
+                <a href="/admin/job">
+                    <i class="fa fa-th"></i> <span>Job Management </span>
+                    <span class="pull-right-container">
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/admin/candidate">
+                    <i class="fa fa-th"></i> <span>Candidate Management </span>
+                    <span class="pull-right-container">
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/admin/recruiter">
+                    <i class="fa fa-th"></i> <span>Recruiter Management </span>
+                    <span class="pull-right-container">
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/admin/address">
+                    <i class="fa fa-th"></i> <span>Address Management </span>
+                    <span class="pull-right-container">
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/admin/cv">
+                    <i class="fa fa-th"></i> <span>CV Management </span>
+                    <span class="pull-right-container">
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/admin/category">
+                    <i class="fa fa-th"></i> <span>Category Management </span>
+                    <span class="pull-right-container">
+                    </span>
+                </a>
+            </li>
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-dashboard"></i> <span>Company Management</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="/admin/company"><i class="fa fa-circle-o"></i> Company List</a></li>
+                    <li><a href="/admin/company/approve"><i class="fa fa-circle-o"></i> Company Approval</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="/admin/company-candidate">
+                    <i class="fa fa-th"></i> <span>Company Candidate Management </span>
+                    <span class="pull-right-container">
+                    </span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/admin/job-candidate">
+                    <i class="fa fa-th"></i> <span>Job Candidate Management </span>
+                    <span class="pull-right-container">
+                    </span>
+                </a>
+            </li>
+
+            <li class="treeview">   
+                <a href="#">
+                    <i class="fa fa-dashboard"></i> <span>Banner Management</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="/admin/statistics"><i class="fa fa-circle-o"></i> Statistics/Reports</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="">
+                    <i class="fa fa-th"></i> <span>Widgets</span>
+                    <span class="pull-right-container">
+                        <small class="label pull-right bg-green">Coming soon</small>
+                    </span>
+                </a>
+            </li>
+
+        </ul>
     </section>
     <!-- /.sidebar -->
-  </aside>
+</aside>

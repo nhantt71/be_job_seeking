@@ -7,6 +7,7 @@ package com.ttn.jobapp.Pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ttn.jobapp.Utils.ReviewStatus;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -42,6 +43,9 @@ public class Company {
     
     @Column(name = "information", columnDefinition = "TEXT")
     private String information;
+    
+    @Column(name = "created_date")
+    private LocalDateTime createdDate = LocalDateTime.now();
     
     @Enumerated(EnumType.STRING)
     private ReviewStatus reviewStatus;

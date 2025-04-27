@@ -5,7 +5,6 @@
 package com.ttn.jobapp.Repositories;
 
 import com.ttn.jobapp.Pojo.Account;
-import com.ttn.jobapp.Utils.Role;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,5 +28,8 @@ public interface AccountRepository extends JpaRepository<Account, Long>{
     
     @Query("SELECT a FROM Account a where a.verifyToken LIKE :verifyToken")
     Optional<Account> findByVerifyToken(@Param("verifyToken") String verifyToken);
+    
+    @Query("SELECT a FROM Account a WHERE a.email = :email AND a.role = 'ADMIN'")
+    Optional<Account> findAdminByEmail(@Param("email") String email);
     
 }

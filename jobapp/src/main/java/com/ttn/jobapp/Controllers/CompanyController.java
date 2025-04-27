@@ -11,6 +11,7 @@ import com.ttn.jobapp.Repositories.CompanyRepository;
 import com.ttn.jobapp.Repositories.RecruiterRepository;
 import com.ttn.jobapp.Services.AddressService;
 import com.ttn.jobapp.Services.CompanyService;
+import com.ttn.jobapp.Services.EmailService;
 import com.ttn.jobapp.Services.SupabaseStorageService;
 import com.ttn.jobapp.Utils.GenerateUniqueFileName;
 import com.ttn.jobapp.Utils.ReviewStatus;
@@ -54,6 +55,9 @@ public class CompanyController {
 
     @Autowired
     private SupabaseStorageService supabaseStorageService;
+    
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping
     public String company(Model model) {
@@ -184,5 +188,39 @@ public class CompanyController {
         this.cs.save(company);
 
         return "redirect:/admin/company";
+    }
+
+    @GetMapping("/approve")
+    public String showApprovalPage(Model model) {
+        model.addAttribute("companies", cs.findByPendingVerifiedAccount());
+        model.addAttribute("companyDto", new CompanyDto());
+        return "admin/company/approve/index";
+    }
+
+    @PostMapping("/approve")
+    public String processApproval(
+            @RequestParam Long companyId,
+            @RequestParam String action,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            Company company = cs.processApproval(companyId, action);
+
+            // Send appropriate email
+            if (action.equals("approved")) {
+                emailService.sendCompanyApprovalEmail(company);
+            } else {
+                emailService.sendCompanyRejectionEmail(company);
+                cs.delete(companyId);
+            }
+
+            redirectAttributes.addFlashAttribute("success",
+                    "Company " + action + " successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Error processing approval: " + e.getMessage());
+        }
+
+        return "redirect:/admin/company/approve";
     }
 }
